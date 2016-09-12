@@ -42,6 +42,9 @@ public class PlayerController : MonoBehaviour {
 		Vector3 movement = new Vector3 (0.0f, 0.0f, vertical);
 
 		rb.transform.Rotate(new Vector3(0.0f, _rotationSpeed * horizontal, 0.0f));
+		//rb.transform.rotation.eulerAngles = new Vector3(rb.transform.rotation.eulerAngles.x, rb.transform.rotation.eulerAngles.y, 0.0f);
+		//rb.transform.rotation = Quaternion.Euler(rb.transform.rotation.eulerAngles.x, rb.transform.rotation.eulerAngles.y, 0.0f);
+		rb.transform.eulerAngles = new Vector3(rb.transform.rotation.eulerAngles.x, rb.transform.rotation.eulerAngles.y, 0.0f);
 
 		float currentSpeed = _speed;
 		/*//accelerate if running straigt, otherwise slow down
@@ -53,6 +56,9 @@ public class PlayerController : MonoBehaviour {
 		}*/
 
 		//rb.velocity = rb.rotation.eulerAngles * _speed * movement;
+		//Vector3 direction = rb.transform.forward * new Vector3(1, 
 		rb.transform.position += transform.forward * Time.deltaTime * currentSpeed * vertical;
+		rb.transform.position = Vector3.Scale(new Vector3(1.0f, 0.0f, 1.0f), rb.transform.position);
+
 	}
 }
