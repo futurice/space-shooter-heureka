@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
+public class Boundary
+{
+	public float xMin, xMax, zMin, zMax;
+}
+
 public class PlayerController : MonoBehaviour {
 
 	[SerializeField]
@@ -16,6 +22,8 @@ public class PlayerController : MonoBehaviour {
 	private float _maxSpeedFactor = 1.5f;
 	[SerializeField]
 	private float _accelerationFactor = 1.1f;
+
+	public Boundary _boundary;
 
 	enum InputKey {
 		Horizontal,
@@ -57,6 +65,11 @@ public class PlayerController : MonoBehaviour {
 		//Vector3 direction = rb.transform.forward * new Vector3(1, 
 		rb.transform.position += transform.forward * Time.deltaTime * currentSpeed * vertical;
 		rb.transform.position = Vector3.Scale(new Vector3(1.0f, 0.0f, 1.0f), rb.transform.position);
+
+		rb.position = new Vector3(
+			Mathf.Clamp (rb.position.x, _boundary.xMin, _boundary.xMax), 
+			0.0f, 
+			Mathf.Clamp (rb.position.z, _boundary.zMin, _boundary.zMax));
 
 	}
 }
