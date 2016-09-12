@@ -45,12 +45,16 @@ public class PlayerController : MonoBehaviour {
 		float vertical = getInput(InputKey.Vertical);//Input.GetAxis ("JoystickVertical");
 
 		Rigidbody rb = GetComponent<Rigidbody> ();
-		//Vector3 movement = new Vector3 (horizontal, 0.0f, vertical);
-		//TODO fix: move towards rotation head
-		Vector3 movement = new Vector3 (0.0f, 0.0f, vertical);
 
 		rb.transform.Rotate(new Vector3(0.0f, _rotationSpeed * horizontal, 0.0f));
 		rb.transform.eulerAngles = new Vector3(0.0f, rb.transform.rotation.eulerAngles.y, 0.0f);
+
+		//Vector3 movement = new Vector3 (horizontal, 0.0f, vertical);
+		//TODO fix: move towards rotation head
+		Vector3 movement = new Vector3 (0.0f, 0.0f, vertical);
+		//let's remove the velocities in all other directions as the movement direction
+		rb.velocity = new Vector3(0.0f, 0.0f, rb.velocity.z);
+
 
 		float currentSpeed = _speed;
 		/*//accelerate if running straigt, otherwise slow down
