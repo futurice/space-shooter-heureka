@@ -76,4 +76,11 @@ public class PlayerController : MonoBehaviour {
 			Mathf.Clamp (rb.position.z, _boundary.zMin, _boundary.zMax));
 
 	}
+
+	void OnTriggerExit(Collider other) {
+		/*if (other.tag == "projectile") {
+			Destroy(other.gameObject);
+			Destroy(this.gameObject);
+		}*/
+	}
 }
