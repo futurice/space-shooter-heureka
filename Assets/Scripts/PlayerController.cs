@@ -77,10 +77,10 @@ public class PlayerController : MonoBehaviour {
 
 	}
 
-	void OnTriggerExit(Collider other) {
-		/*if (other.tag == "projectile") {
+	void OnTriggerEnter(Collider other) {
+		if (other.tag == "projectile") {
 			Destroy(other.gameObject);
 			Destroy(this.gameObject);
-		}*/
+		}
 	}
 }
