@@ -80,7 +80,12 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
 			Destroy(other.gameObject);
-			Destroy(this.gameObject);
+			//Destroy(this.gameObject);
+			GameManager.Instance.destroyWithExplosion(this.gameObject);
+		}
+		else if (other.tag == "spaceship") {
+			GameManager.Instance.destroyWithExplosion(other.gameObject);
+			GameManager.Instance.destroyWithExplosion(this.gameObject);
 		}
 	}
 }

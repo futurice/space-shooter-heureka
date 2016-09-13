@@ -18,4 +18,13 @@ public class PlanetBehaviour : MonoBehaviour {
 		this.gameObject.transform.Rotate(_rotationSpeed * _direction);
 
 	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.tag == "projectile") {
+			Destroy(other.gameObject);
+		}
+		else if (other.tag == "spaceship") {
+			GameManager.Instance.destroyWithExplosion(other.gameObject);
+		}
+	}
 }
