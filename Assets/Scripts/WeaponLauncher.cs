@@ -23,7 +23,7 @@ public class WeaponLauncher : MonoBehaviour {
 
 			Vector3 shipDirection = this.transform.forward;
 			//let's try to position the projectile so it's ahead. Should take the max speed of the ship into account..
-			weapon.transform.localPosition = this.transform.localPosition + 2 * shipCollider.bounds.extents.z * shipDirection;
+			weapon.transform.localPosition = this.transform.localPosition + 3 * shipCollider.bounds.extents.z * shipDirection;
 			weapon.transform.localRotation = this.transform.rotation;
 		}
 
