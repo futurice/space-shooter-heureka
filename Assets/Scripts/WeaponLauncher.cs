@@ -5,14 +5,12 @@ public class WeaponLauncher : MonoBehaviour {
 	[SerializeField]
 	GameObject _prefab;
 
-	[SerializeField]
-	string _keyCode = "JoystickFire";
+	string _keyCode = "Fire0";
 
-	// Use this for initialization
-	void Start () {
-	
+	public void setFireKeyCode(string keycode) {
+		_keyCode = keycode;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		bool pressed = Input.GetButtonDown(_keyCode);

@@ -10,9 +10,6 @@ public class Boundary
 public class PlayerController : MonoBehaviour {
 
 	[SerializeField]
-	private bool _isJoystick = true;
-
-	[SerializeField]
 	private float _speed = 10.0f;
 
 	[SerializeField]
@@ -25,24 +22,21 @@ public class PlayerController : MonoBehaviour {
 
 	public Boundary _boundary;
 
-	enum InputKey {
-		Horizontal,
-		Vertical,
-		Fire
+	private GameConstants.PlayerKeys _keys = new GameConstants.PlayerKeys(0);
+
+	public void setPlayerKeys(GameConstants.PlayerKeys keys) {
+		_keys = keys;
 	}
 
-	private float getInput(InputKey key) {
-		switch (key) {
-		case InputKey.Horizontal: return _isJoystick ? Input.GetAxis ("JoystickHorizontal") : Input.GetAxis ("Horizontal");
-		case InputKey.Vertical: return _isJoystick ? Input.GetAxis ("JoystickVertical") : Input.GetAxis ("Vertical");
-		//case InputKey.Fire: return _isJoystick ? Input.GetAxis ("JoystickHorizontal") : Input.GetAxis ("Horizontal");
-		default: return 0.0f;
-		}
+	private int _id = 0;
+	public int Id {
+		set {_id = value; }
+		get { return _id; }
 	}
 
 	void FixedUpdate() {
-		float horizontal = getInput(InputKey.Horizontal);//Input.GetAxis ("JoystickHorizontal");
-		float vertical = getInput(InputKey.Vertical);//Input.GetAxis ("JoystickVertical");
+		float horizontal = Input.GetAxis(_keys.HorizontalAxis);
+		float vertical = Input.GetAxis(_keys.VerticalAxis);
 
 		Rigidbody rb = GetComponent<Rigidbody> ();
 
