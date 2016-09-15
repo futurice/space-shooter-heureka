@@ -13,6 +13,14 @@ public class GameManager: Singleton<GameManager> {
 	[SerializeField]
 	private Transform _homePlanet;
 
+	[SerializeField]
+	private Transform _gameArea;
+
+	[SerializeField]
+	private GameObject _collectablePrefab;
+
+	private float _secsUntilNextCollectable = 0.0f;
+
 	private Dictionary<int, GameObject> _playerShips = new Dictionary<int, GameObject>();
 
 	void Start () {
@@ -20,6 +28,12 @@ public class GameManager: Singleton<GameManager> {
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
 			createPlayer(id);
 		}
+		initCollectableTimeout();
+	}
+
+	private void initCollectableTimeout() {
+		_secsUntilNextCollectable = Mathf.Clamp(10.0f * Random.value, 1.0f, 10.0f);
+	
 	}
 
 	void Update() {
@@ -34,6 +48,13 @@ public class GameManager: Singleton<GameManager> {
 				}
 
 			}
+		}
+
+		_secsUntilNextCollectable -= Time.deltaTime;
+		if (_secsUntilNextCollectable <= 0.0f) {
+			//These should also be cleaned up.. Add logic to CollectableBehaviour or here
+			createCollectable();
+			initCollectableTimeout();
 		}
 		//TODO also blow up idle spaceships with no movement after N secs.
 	}
@@ -78,4 +99,11 @@ public class GameManager: Singleton<GameManager> {
 
 	}
 
+	private void createCollectable() {
+		GameObject collectable = Instantiate(_collectablePrefab) as GameObject;
+		float randomX = (Random.value - 0.5f) * _gameArea.localScale.x;
+		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
+
+		collectable.transform.position = new Vector3(randomX, 0.0f, randomZ); 
+	}
 }

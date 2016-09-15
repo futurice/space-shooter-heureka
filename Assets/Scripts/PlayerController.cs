@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Boundary
@@ -20,7 +21,16 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField]
 	private float _accelerationFactor = 1.1f;
 
-	public Boundary _boundary;
+	[SerializeField]
+	private Boundary _boundary;//TODO remove and use the boundary gameobject in the scene
+
+	private List<Collectable> _collectables = new List<Collectable>();
+
+	private int _id = 0;
+	public int Id {
+		set {_id = value; }
+		get { return _id; }
+	}
 
 	private GameConstants.PlayerKeys _keys = new GameConstants.PlayerKeys(0);
 
@@ -28,11 +38,12 @@ public class PlayerController : MonoBehaviour {
 		_keys = keys;
 	}
 
-	private int _id = 0;
-	public int Id {
-		set {_id = value; }
-		get { return _id; }
+	public void addCollectable(Collectable collectable) {
+		//TODO use these on update / input, etc
+		//TODO remove it automatically after timeout, run out of ammo, etc
+		_collectables.Add(collectable);
 	}
+
 
 	void FixedUpdate() {
 		float horizontal = Input.GetAxis(_keys.HorizontalAxis);
@@ -74,7 +85,6 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
 			Destroy(other.gameObject);
-			//Destroy(this.gameObject);
 			GameManager.Instance.destroyWithExplosion(this.gameObject);
 		}
 		else if (other.tag == "spaceship") {
