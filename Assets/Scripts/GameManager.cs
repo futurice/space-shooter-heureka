@@ -9,7 +9,8 @@ public class GameManager: Singleton<GameManager> {
 	[SerializeField]
 	private GameObject _spaceShipPrefab;
 
-	//TODO create players back once they're destroyed
+	[SerializeField]
+	private Transform _homePlanet;
 
 	private const float CREATE_TIMEOUT = 2.0f;
 
@@ -40,6 +41,7 @@ public class GameManager: Singleton<GameManager> {
 	void createPlayer(int id) {
 		GameObject ship = Instantiate(_spaceShipPrefab) as GameObject;
 
+		//init game controller keys. See "Project Settings > Input" where the id mapping is
 		GameConstants.PlayerKeys keys = GameConstants.getPlayerKeys(id);
 		PlayerController ctrl = ship.GetComponent<PlayerController>();
 		ctrl.setPlayerKeys(keys);
@@ -47,10 +49,11 @@ public class GameManager: Singleton<GameManager> {
 
 		ship.GetComponent<WeaponLauncher>().setFireKeyCode(keys.FireBtn);
 
-		//TODO pre-define start positions
-		Vector3 startPos = Random.onUnitSphere;
-		startPos.y = 0.0f;
+		//set initial position to unique place around the home planet
+		Vector3 directionOnUnitCircle = GameConstants.getPlayerStartDirection(id);
+		Vector3 startPos = _homePlanet.position + 1.2f * _homePlanet.localScale.magnitude * directionOnUnitCircle; 
 		ship.transform.position = startPos;
+
 
 	}
 
