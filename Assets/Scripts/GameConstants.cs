@@ -6,7 +6,7 @@ public class GameConstants {
 
 	public class PlayerKeys {
 		private int _id;
-		//Keys are mapped in InputManager, based on this convention
+		//Keys are mapped in "Project Settings > Input", based on this convention
 		public PlayerKeys(int id) {
 			_id = id;
 		}
@@ -20,6 +20,10 @@ public class GameConstants {
 		public string FireBtn {
 			get { return "Fire" + _id; }
 		}
+		public string SpawnBtn {
+			get { return "Spawn" + _id; }
+		}
+
 	}
 	
 	private static Dictionary<int, PlayerKeys> _keyCodeLUT = new Dictionary<int, PlayerKeys>();
