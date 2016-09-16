@@ -7,16 +7,26 @@ public class WeaponLauncher : MonoBehaviour {
 
 	string _keyCode = "Fire0";
 
+	Collectable.WeaponType _curWeapon = Collectable.WeaponType.None;
+
 	public void setFireKeyCode(string keycode) {
 		_keyCode = keycode;
+	}
+
+	public void addWeapon(Collectable collectable) {
+		//TODO allow possibly multiple simultaneous weapons, based on type
+		_curWeapon = collectable.Weapon;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		bool pressed = Input.GetButtonDown(_keyCode);
-		if (pressed) {
+		if (pressed && _curWeapon != Collectable.WeaponType.None) {
 			GameObject weapon = Instantiate(_prefab) as GameObject;
-			// TODO don't destroy the shooting spaceship, this is now possible
+			//TODO Select prefab based on weapontype
+
+			// TODO don't destroy the shooting spaceship, this is now possible. 
+			//f.ex add source to the projectilebehaviour, etc?
 			MeshCollider shipCollider = GetComponent<MeshCollider>();
 
 			Vector3 shipDirection = this.transform.forward;

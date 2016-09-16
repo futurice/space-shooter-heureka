@@ -52,4 +52,5 @@ public class GameConstants {
 	public static Vector3 getPlayerStartDirection(int id) {
 		return _startPosLUT[id];
 	}
+
 }

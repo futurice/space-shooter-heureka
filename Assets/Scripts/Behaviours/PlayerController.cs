@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour {
 		//TODO remove it automatically after timeout, run out of ammo, etc
 		_collectables.Add(collectable);
 		Debug.Log (string.Format ("SpaceShip {0}: Adding collectable of type: {1}", Id, collectable.Type));
+
+		if (collectable.Type == Collectable.CollectableType.Weapon) {
+			GetComponent<WeaponLauncher>().addWeapon(collectable);
+		}
 	}
 
 	void FixedUpdate() {
@@ -46,9 +50,9 @@ public class PlayerController : MonoBehaviour {
 
 		Rigidbody rb = GetComponent<Rigidbody> ();
 
-		const float speedFactor = getSpeedFactor();
+		float speedFactor = getSpeedFactor();
 
-		const float rotationSpeed = _rotationSpeed * speedFactor; 
+		float rotationSpeed = speedFactor * _rotationSpeed; 
 		rb.transform.Rotate(new Vector3(0.0f, rotationSpeed * horizontal, 0.0f));
 		rb.transform.eulerAngles = new Vector3(0.0f, rb.transform.rotation.eulerAngles.y, 0.0f);
 
@@ -58,7 +62,7 @@ public class PlayerController : MonoBehaviour {
 		//let's remove the velocities in all other directions as the movement direction
 		rb.velocity = new Vector3(0.0f, 0.0f, rb.velocity.z);
 
-		const float currentSpeed = getSpeedFactor() * _speed;
+		float currentSpeed = speedFactor * _speed;
 
 		rb.transform.position += transform.forward * Time.deltaTime * currentSpeed * vertical;
 		rb.transform.position = Vector3.Scale(new Vector3(1.0f, 0.0f, 1.0f), rb.transform.position);
