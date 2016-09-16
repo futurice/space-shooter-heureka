@@ -13,6 +13,15 @@ public class Collectable {
 		get { return _type; }
 	}
 
+	public float SpeedUpFactor { 
+		get {
+			switch(_type) {
+			case CollectableType.SpeedUp: return 1.5f;
+			default: return 1.0f;
+			}
+		}
+	}
+
 	public Collectable(CollectableType type) {
 		_type = type;
 	}
@@ -22,4 +31,5 @@ public class Collectable {
 		CollectableType type = rand > 0.5f ? CollectableType.SpeedUp : CollectableType.Weapon;
 		return new Collectable(type);
 	}
+
 }
