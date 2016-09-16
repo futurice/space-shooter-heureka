@@ -38,6 +38,11 @@ public class GameManager: Singleton<GameManager> {
 	}
 
 	void Update() {
+		if (Input.GetKey("escape")) {
+			Debug.LogWarning("Quitting application");
+			Application.Quit();
+        }
+
 		//TODO remove direct button listening from this class... abstract it somewhere and just get events, etc
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
 			if (!_playerShips.ContainsKey(id)) {
