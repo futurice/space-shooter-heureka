@@ -29,7 +29,7 @@ public class GameConstants {
 	private static Dictionary<int, PlayerKeys> _keyCodeLUT = new Dictionary<int, PlayerKeys>();
 	private static Dictionary<int, Vector3> _startPosLUT = new Dictionary<int, Vector3>();
 
-	public const int NUMBER_OF_PLAYERS = 2;
+	public const int NUMBER_OF_PLAYERS = 3;
 
 	static GameConstants() {
 		const float angleInc = 2.0f * Mathf.PI / NUMBER_OF_PLAYERS;
