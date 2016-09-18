@@ -28,7 +28,7 @@ public class Collectable {
 	public float SpeedUpFactor { 
 		get {
 			switch(_type) {
-			case CollectableType.SpeedUp: return 1.5f;
+			case CollectableType.SpeedUp: return 1.3f;
 			default: return 1.0f;
 			}
 		}
