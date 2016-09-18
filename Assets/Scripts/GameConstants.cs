@@ -31,6 +31,8 @@ public class GameConstants {
 
 	public const int NUMBER_OF_PLAYERS = 3;
 
+	public const float PLAYER_IDLE_TIMEOUT = 120.0f; //seconds 
+
 	static GameConstants() {
 		const float angleInc = 2.0f * Mathf.PI / NUMBER_OF_PLAYERS;
 

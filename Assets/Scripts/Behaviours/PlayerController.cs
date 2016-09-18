@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour {
 
 	private List<Collectable> _collectables = new List<Collectable>();
 
+	private bool _hasInput = false;
+
 	private int _id = 0;
 	public int Id {
 		set {_id = value; }
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour {
 	void FixedUpdate() {
 		float horizontal = Input.GetAxis(_keys.HorizontalAxis);
 		float vertical = Input.GetAxis(_keys.VerticalAxis);
+		_hasInput = horizontal > 0.00001f || vertical > 0.000001f;
 
 		Rigidbody rb = GetComponent<Rigidbody> ();
 
@@ -91,5 +94,9 @@ public class PlayerController : MonoBehaviour {
 			GameManager.Instance.destroyWithExplosion(other.gameObject);
 			GameManager.Instance.destroyWithExplosion(this.gameObject);
 		}
+	}
+
+	public bool hasInput() {
+		return _hasInput;
 	}
 }

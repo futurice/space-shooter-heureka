@@ -21,7 +21,16 @@ public class GameManager: Singleton<GameManager> {
 
 	private float _secsUntilNextCollectable = 0.0f;
 
-	private Dictionary<int, GameObject> _playerShips = new Dictionary<int, GameObject>();
+	private Dictionary<int, PlayerState> _playerShips = new Dictionary<int, PlayerState>();
+
+  	private class PlayerState {
+		public PlayerState(GameObject obj) {
+			_ship = obj;
+		}
+		public GameObject _ship;
+		public float _idleTime = 0.0f;
+	}
+
 
 	void Start () {
 		//TODO enumerate min and max
@@ -63,6 +72,7 @@ public class GameManager: Singleton<GameManager> {
 			initCollectableTimeout();
 		}
 		//TODO also blow up idle spaceships with no movement after N secs.
+		checkIdleTimeouts();
 	}
 
 	/**
@@ -87,7 +97,7 @@ public class GameManager: Singleton<GameManager> {
 
 	private void createPlayer(int id) {
 		GameObject ship = Instantiate(_spaceShipPrefab) as GameObject;
-		_playerShips[id] = ship;
+		_playerShips[id] = new PlayerState(ship);
 
 		//init game controller keys. See "Project Settings > Input" where the id mapping is
 		GameConstants.PlayerKeys keys = GameConstants.getPlayerKeys(id);
@@ -111,5 +121,26 @@ public class GameManager: Singleton<GameManager> {
 		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
 
 		collectable.transform.position = new Vector3(randomX, 0.0f, randomZ); 
+	}
+
+	private void checkIdleTimeouts() {
+		List<GameObject> destroyUs = new List<GameObject>();
+
+		foreach (PlayerState state in _playerShips.Values) {
+			PlayerController ctrl = state._ship.GetComponent<PlayerController>();
+			if (ctrl.hasInput()) {
+				state._idleTime = 0.0f;
+			}
+			else {
+				state._idleTime += Time.deltaTime;
+				if (state._idleTime > GameConstants.PLAYER_IDLE_TIMEOUT) {
+					destroyUs.Add(state._ship);
+				}
+			}
+		}
+
+		foreach(GameObject killMe in destroyUs) {
+			destroyWithExplosion(killMe);
+		}
 	}
 }
