@@ -33,6 +33,11 @@ public class GameManager: Singleton<GameManager> {
 
 
 	void Start () {
+		string[] joysticks = Input.GetJoystickNames();
+		foreach (string j in joysticks) {
+			Debug.Log("Found joystick " + j);
+		}
+
 		//TODO enumerate min and max
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
 			createPlayer(id);
@@ -56,9 +61,10 @@ public class GameManager: Singleton<GameManager> {
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
 			if (!_playerShips.ContainsKey(id)) {
 				GameConstants.PlayerKeys keys = GameConstants.getPlayerKeys(id);
-
 				bool pressed = Input.GetButtonDown(keys.SpawnBtn);
 				if (pressed) {
+					Debug.Log(string.Format ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id));
+
 					createPlayer(id);
 				}
 
