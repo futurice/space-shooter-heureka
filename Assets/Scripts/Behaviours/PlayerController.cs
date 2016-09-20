@@ -19,7 +19,7 @@ public class PlayerController : Timeoutable {
 	[SerializeField]
 	private Boundary _boundary;//TODO remove and use the boundary gameobject in the scene
 
-	private List<Collectable> _collectables = new List<Collectable>();
+	private List<Collectable> _collectables = new List<Collectable>();//TODO add timestamp, so we can 
 
 	private bool _hasInput = false;
 
@@ -55,6 +55,12 @@ public class PlayerController : Timeoutable {
 
 		if (collectable.Type == Collectable.CollectableType.Weapon) {
 			GetComponent<WeaponLauncher>().addWeapon(collectable);
+		}
+		else if (collectable.Type == Collectable.CollectableType.Enlarge) {
+			//TODO tween
+			//TODO this should also scale ammunition. and perhaps the exlosion? :D
+			Vector3 curScale = this.gameObject.transform.localScale;
+			this.gameObject.transform.localScale = 2.0f * curScale;
 		}
 	}
 

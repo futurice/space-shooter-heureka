@@ -5,8 +5,10 @@ public class Collectable {
 	//We could also use inheritance.. refactor if needed
 	//TODO Shields, SlowDown?
 	public enum CollectableType {
+		Empty,
 		SpeedUp, 
-		Weapon
+		Weapon,
+		Enlarge
 	}
 
 	//TODO machine gun, flamethrower, 
@@ -41,7 +43,16 @@ public class Collectable {
 
 	public static Collectable newRandomCollectable() {
 		float rand = Random.value;
-		CollectableType type = rand > 0.5f ? CollectableType.SpeedUp : CollectableType.Weapon;
+		CollectableType type = CollectableType.Empty;
+		if (rand < 0.4f) {
+			type = CollectableType.SpeedUp;
+		}
+		else if (rand < 0.8f) {
+			type = CollectableType.Weapon;
+		}
+		else {
+			type = CollectableType.Enlarge;
+		}
 		WeaponType weapon = WeaponType.None;
 		if (type == CollectableType.Weapon) {
 			//TODO add new types of weapons
