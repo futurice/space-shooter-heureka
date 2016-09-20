@@ -8,7 +8,7 @@ public class Boundary
 	public float xMin, xMax, zMin, zMax;
 }
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : Timeoutable {
 
 	[SerializeField]
 	private float _speed = 10.0f;
@@ -33,6 +33,18 @@ public class PlayerController : MonoBehaviour {
 
 	public void setPlayerKeys(GameConstants.PlayerKeys keys) {
 		_keys = keys;
+	}
+
+	public override void Update() {
+		base.Update();
+	}
+
+	public override float getTimeout() {
+		return GameConstants.PLAYER_IDLE_TIMEOUT;
+	}
+	
+	public override bool shouldReset() {
+		return _hasInput;
 	}
 
 	public void addCollectable(Collectable collectable) {

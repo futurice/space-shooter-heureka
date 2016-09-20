@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameManager: Singleton<GameManager> {
+public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	[SerializeField]
 	private GameObject _explosionPrefab;
@@ -77,8 +77,6 @@ public class GameManager: Singleton<GameManager> {
 			createCollectable();
 			initCollectableTimeout();
 		}
-		//TODO also blow up idle spaceships with no movement after N secs.
-		checkIdleTimeouts();
 	}
 
 	/**
@@ -118,8 +116,14 @@ public class GameManager: Singleton<GameManager> {
 		Vector3 startPos = _homePlanet.position + 1.2f * _homePlanet.localScale.magnitude * directionOnUnitCircle; 
 		ship.transform.position = startPos;
 
-
+		ctrl.addTimeoutListener(this);
 	}
+
+	public void timeoutElapsed(Timeoutable t) {
+		//Invoked by the Controllers after a timeout
+		destroyWithExplosion(t.gameObject);
+	}
+
 
 	private void createCollectable() {
 		GameObject collectable = Instantiate(_collectablePrefab) as GameObject;
@@ -127,26 +131,5 @@ public class GameManager: Singleton<GameManager> {
 		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
 
 		collectable.transform.position = new Vector3(randomX, 0.0f, randomZ); 
-	}
-
-	private void checkIdleTimeouts() {
-		List<GameObject> destroyUs = new List<GameObject>();
-
-		foreach (PlayerState state in _playerShips.Values) {
-			PlayerController ctrl = state._ship.GetComponent<PlayerController>();
-			if (ctrl.hasInput()) {
-				state._idleTime = 0.0f;
-			}
-			else {
-				state._idleTime += Time.deltaTime;
-				if (state._idleTime > GameConstants.PLAYER_IDLE_TIMEOUT) {
-					destroyUs.Add(state._ship);
-				}
-			}
-		}
-
-		foreach(GameObject killMe in destroyUs) {
-			destroyWithExplosion(killMe);
-		}
 	}
 }
