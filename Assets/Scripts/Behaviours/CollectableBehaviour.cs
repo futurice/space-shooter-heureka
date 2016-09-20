@@ -21,11 +21,21 @@ public class CollectableBehaviour : Timeoutable {
 			PlayerController ctrl = other.GetComponent<PlayerController>();
 			ctrl.addCollectable(_collectable);
 			Destroy(this.gameObject);
+			playSoundFx();
 		}
 		else if (other.tag == "planet") {
 			//destroy just so that it doesn't stay within the planet looking stupid.
 			//spawning these should however check that this doesn't happen, but leave this just in case
 			Destroy(this.gameObject);
+		}
+	}
+
+	void playSoundFx() {
+		switch (_collectable.Type) {
+		case Collectable.CollectableType.SpeedUp: AudioManager.Instance.playClip(AudioManager.AppAudioClip.AcquireSpeedup); 
+			break;
+		case Collectable.CollectableType.Weapon: AudioManager.Instance.playClip(AudioManager.AppAudioClip.AcquireWeapon); 
+			break;
 		}
 	}
 }

@@ -34,6 +34,8 @@ public class WeaponLauncher : MonoBehaviour {
 			//let's try to position the projectile so it's ahead. Should take the max speed of the ship into account..
 			weapon.transform.localPosition = this.transform.localPosition + 2.0f * shipCollider.bounds.extents.z * shipDirection;
 			weapon.transform.localRotation = this.transform.rotation;
+
+			AudioManager.Instance.playClip(AudioManager.AppAudioClip.Shoot);
 		}
 
 

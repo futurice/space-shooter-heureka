@@ -10,7 +10,10 @@ public class AudioManager : Singleton<AudioManager> {
     private List<AudioSource> _currentlyPlaying = new List<AudioSource>();
 
 	public enum AppAudioClip {
-		Explosion
+		Explosion,
+		AcquireWeapon,
+		AcquireSpeedup,
+		Shoot
 	}
 
     private bool _muted = false;
@@ -29,7 +32,16 @@ public class AudioManager : Singleton<AudioManager> {
         if (clip == AppAudioClip.Explosion) {
 			path = "Audio/explosion_player";
         }
-        return path;
+		else if (clip == AppAudioClip.AcquireWeapon) {
+			path = "Audio/object_attached";
+		}
+		else if (clip == AppAudioClip.AcquireSpeedup) {
+			path = "Audio/transition1";
+		}
+		else if (clip == AppAudioClip.Shoot) {
+			path = "Audio/weapon_enemy";
+		}
+		return path;
     }
 
     protected AudioManager() {}
