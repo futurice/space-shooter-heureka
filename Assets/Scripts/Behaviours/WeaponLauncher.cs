@@ -1,13 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeaponLauncher : MonoBehaviour {
+public class WeaponLauncher : Timeoutable, Timeoutable.TimeoutListener {
 	[SerializeField]
 	GameObject _prefab;
 
 	string _keyCode = "Fire0";
 
 	Collectable.WeaponType _curWeapon = Collectable.WeaponType.None;
+
+	void Start() {
+		addTimeoutListener(this);
+	}
+
+	public void timeoutElapsed(Timeoutable t) {
+		_curWeapon = Collectable.WeaponType.None;
+	}
+
+	public override float getTimeout() {
+		return GameConstants.WEAPON_TIMEOUT;
+	}
 
 	public void setFireKeyCode(string keycode) {
 		_keyCode = keycode;
@@ -16,10 +28,12 @@ public class WeaponLauncher : MonoBehaviour {
 	public void addWeapon(Collectable collectable) {
 		//TODO allow possibly multiple simultaneous weapons, based on type
 		_curWeapon = collectable.Weapon;
+		reset();
 	}
 
 	// Update is called once per frame
 	void Update () {
+		base.Update();
 		bool pressed = Input.GetButtonDown(_keyCode);
 		if (pressed && _curWeapon != Collectable.WeaponType.None) {
 			GameObject weapon = Instantiate(_prefab) as GameObject;

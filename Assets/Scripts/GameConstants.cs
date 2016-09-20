@@ -34,6 +34,7 @@ public class GameConstants {
 	//Timeouts are in seconds
 	public const float PLAYER_IDLE_TIMEOUT = 120.0f; 
 	public const float COLLECTABLE_TIMEOUT = 10.0f; 
+	public const float WEAPON_TIMEOUT = 10.0f; 
 
 	static GameConstants() {
 		const float angleInc = 2.0f * Mathf.PI / NUMBER_OF_PLAYERS;
