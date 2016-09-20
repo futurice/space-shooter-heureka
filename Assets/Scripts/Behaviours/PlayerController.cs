@@ -99,8 +99,11 @@ public class PlayerController : Timeoutable {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
-			Destroy(other.gameObject);
-			GameManager.Instance.destroyWithExplosion(this.gameObject);
+			ProjectileBehaviour projectile = other.gameObject.GetComponent<ProjectileBehaviour>();
+			if (projectile.Source != this.gameObject) {
+				Destroy(other.gameObject);
+				GameManager.Instance.destroyWithExplosion(this.gameObject);
+			}
 		}
 		else if (other.tag == "spaceship") {
 			GameManager.Instance.destroyWithExplosion(other.gameObject);
