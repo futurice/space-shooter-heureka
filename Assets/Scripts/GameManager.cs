@@ -91,6 +91,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		Destroy(explosion, duration);
 
 		Destroy(obj);
+		AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
 
 		//TODO add tags to constants
 		if (obj.tag == "spaceship" ) {
