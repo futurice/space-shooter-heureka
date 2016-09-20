@@ -120,8 +120,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	}
 
 	public void timeoutElapsed(Timeoutable t) {
-		//Invoked by the Controllers after a timeout
-		destroyWithExplosion(t.gameObject);
+		//TODO refactor tags out, use method accesesor for this feature
+		if (t.tag == "spaceship") {
+			//Invoked by the Controllers after a timeout
+			destroyWithExplosion(t.gameObject);
+		}
+		else {
+			Destroy(t.gameObject);
+		}
 	}
 
 
@@ -131,5 +137,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
 
 		collectable.transform.position = new Vector3(randomX, 0.0f, randomZ); 
+
+		collectable.GetComponent<CollectableBehaviour>().addTimeoutListener(this);
 	}
 }

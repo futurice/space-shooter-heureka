@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CollectableBehaviour : MonoBehaviour {
+public class CollectableBehaviour : Timeoutable {
 
 	private Collectable _collectable;
-
-	private float _lifetimeInSecs = 0.0f;
-	public float Lifetime {
-		get { return _lifetimeInSecs; }
-	}
 
 	// Use this for initialization
 	void Start () {
@@ -16,9 +11,8 @@ public class CollectableBehaviour : MonoBehaviour {
 		_collectable = Collectable.newRandomCollectable();
 	}
 
-	void Update() {
-		//TODO clean up after some time?
-		_lifetimeInSecs += Time.deltaTime;
+	public override float getTimeout() {
+		return GameConstants.COLLECTABLE_TIMEOUT;
 	}
 
 	void OnTriggerEnter(Collider other) {
