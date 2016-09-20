@@ -21,7 +21,8 @@ public class PlanetBehaviour : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
-			Destroy(other.gameObject);
+			GameManager.Instance.destroyWithExplosion(other.gameObject);
+			//Destroy(other.gameObject);
 		}
 		else if (other.tag == "spaceship") {
 			GameManager.Instance.destroyWithExplosion(other.gameObject);
