@@ -11,16 +11,15 @@ public class AsteroidBehaviour : MonoBehaviour {
 		GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
 		//place outside of bounds and calc some constant velocity, or do it in the game manager
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
-			GameManager.Instance.destroyWithExplosion(this.gameObject);
+			destroyMe();
 			Destroy(other.gameObject);
 		}
+	}
+
+	protected virtual void destroyMe() {
+		GameManager.Instance.destroyWithExplosion(this.gameObject);
 	}
 }
