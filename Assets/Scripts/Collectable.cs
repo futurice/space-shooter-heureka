@@ -8,7 +8,8 @@ public class Collectable {
 		Empty,
 		SpeedUp, 
 		Weapon,
-		Enlarge
+		Enlarge,
+		BonusPoints
 	}
 
 	//TODO machine gun, flamethrower, 
@@ -59,6 +60,10 @@ public class Collectable {
 			weapon = WeaponType.Projectile;
 		}
 		return new Collectable(type, weapon);
+	}
+
+	public static Collectable newBonusCollectable() {
+		return new Collectable(CollectableType.BonusPoints, WeaponType.None);
 	}
 
 }

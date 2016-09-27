@@ -5,10 +5,27 @@ public class CollectableBehaviour : Timeoutable {
 
 	private Collectable _collectable;
 
+	//naming just sucks..
+	public enum ReceivedCollectable {
+		Random,
+		Bonus
+	}
+	[SerializeField]
+	ReceivedCollectable _receivableType = ReceivedCollectable.Random;
+
+	public ReceivedCollectable ReceivableType {
+		set { _receivableType = value; }
+	}
+
 	// Use this for initialization
 	void Start () {
 		//TODO change sprite based on the type?
-		_collectable = Collectable.newRandomCollectable();
+		if (_receivableType == ReceivedCollectable.Random) {
+			_collectable = Collectable.newRandomCollectable();
+		}
+		else {
+			_collectable = Collectable.newBonusCollectable();
+		}
 	}
 
 	public override float getTimeout() {

@@ -21,6 +21,13 @@ public class AsteroidBehaviour : MonoBehaviour {
 	}
 
 	public virtual void destroyMe() {
+		//not very good way, we could just have the code here then...
+		BonusSpawnerBehaviour bonusSpawner = GetComponent<BonusSpawnerBehaviour>();
+		if (bonusSpawner) {
+			bonusSpawner.spawnBonusOnDestroy(this.gameObject.transform.position);	
+		}
+
 		GameManager.Instance.destroyWithExplosion(this.gameObject);
+
 	}
 }
