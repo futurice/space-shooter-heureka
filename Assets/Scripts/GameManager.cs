@@ -46,9 +46,15 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	}
 
 	private void initCollectableTimeout() {
-		//TODO: Rate should probably be controlled by the number of active ships?
-		_secsUntilNextCollectable = Mathf.Clamp(10.0f * Random.value, 1.0f, 10.0f);
-	
+		//Rate is loosely controlled by the number of active ships
+		float timeout = 10.0f;
+		if (_playerShips.Count < 4) {
+			timeout = 10.0f;
+		}
+		else {
+			timeout = 5.0f;
+		}
+		_secsUntilNextCollectable = Mathf.Clamp(timeout * Random.value, 1.0f, timeout);
 	}
 
 	void Update() {

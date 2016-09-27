@@ -29,7 +29,7 @@ public class GameConstants {
 	private static Dictionary<int, PlayerKeys> _keyCodeLUT = new Dictionary<int, PlayerKeys>();
 	private static Dictionary<int, Vector3> _startPosLUT = new Dictionary<int, Vector3>();
 
-	public const int NUMBER_OF_PLAYERS = 3;
+	public const int NUMBER_OF_PLAYERS = 5;
 
 	//Timeouts are in seconds
 	public const float PLAYER_IDLE_TIMEOUT = 120.0f; 
