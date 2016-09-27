@@ -19,6 +19,10 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	[SerializeField]
 	private GameObject _collectablePrefab;
 
+	[SerializeField]
+	private GameObject _asteroidPrefab;
+	private List<GameObject> _asteroids = new List<GameObject>();
+
 	private float _secsUntilNextCollectable = 0.0f;
 
 	private Dictionary<int, PlayerState> _playerShips = new Dictionary<int, PlayerState>();
@@ -42,7 +46,12 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
 			createPlayer(id);
 		}
+		for (int n = 0; n < GameConstants.NUMBER_OF_ASTEROIDS; n++) {
+			createAsteroid();
+		}
+
 		initCollectableTimeout();
+
 	}
 
 	private void initCollectableTimeout() {
@@ -83,6 +92,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			createCollectable();
 			initCollectableTimeout();
 		}
+
+
 	}
 
 	/**
@@ -104,6 +115,20 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			int id = obj.GetComponent<PlayerController>().Id;
 			_playerShips.Remove(id);
 		}
+	}
+
+	public void destroyAsteroid(GameObject obj) {
+		Debug.Log("destroy asteroid");
+		if (_asteroids.Remove(obj)) {
+			//create new to replace old one
+			Debug.Log("Creating a new asteroid to replace old");
+			createAsteroid();
+		}
+		else {
+			Debug.LogWarning("Destroying asteroid that's not on the list!");
+		}
+		AsteroidBehaviour behaviour = obj.GetComponent<AsteroidBehaviour>();
+		behaviour.destroyMe();
 	}
 
 	private void createPlayer(int id) {
@@ -147,4 +172,25 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 		collectable.GetComponent<CollectableBehaviour>().addTimeoutListener(this);
 	}
+
+	private void createAsteroid() {
+		//TODO some animation
+		GameObject asteroid = Instantiate(_asteroidPrefab) as GameObject;
+		if (Random.value > 0.2f) {
+			asteroid.AddComponent<AsteroidBehaviour>();
+		}
+		else {
+			asteroid.AddComponent<FallingAsteroidBehaviour>();
+		}
+		//TODO make sure it doesn't overlap with the planet
+		float randomX = (Random.value - 0.5f) * _gameArea.localScale.x;
+		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
+		asteroid.transform.position = new Vector3(randomX, 0.0f, randomZ); 
+
+		float scaleFactor = Random.Range(0.5f, 1.0f);
+		asteroid.transform.localScale = scaleFactor * asteroid.transform.localScale;
+		_asteroids.Add(asteroid);
+	}
+	
+
 }

@@ -9,7 +9,7 @@ public class FallingAsteroidBehaviour : AsteroidBehaviour {
 
 	private const float ANIMATION_LENGTH = 3.0f;
 
-	protected override void destroyMe()
+	public override void destroyMe()
 	{
 		_animate = true;
 	}

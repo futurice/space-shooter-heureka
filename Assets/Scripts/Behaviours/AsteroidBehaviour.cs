@@ -14,12 +14,13 @@ public class AsteroidBehaviour : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
-			destroyMe();
+			//destroyMe();
+			GameManager.Instance.destroyAsteroid(this.gameObject);
 			Destroy(other.gameObject);
 		}
 	}
 
-	protected virtual void destroyMe() {
+	public virtual void destroyMe() {
 		GameManager.Instance.destroyWithExplosion(this.gameObject);
 	}
 }
