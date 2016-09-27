@@ -14,7 +14,7 @@ public class WeaponLauncher : Timeoutable, Timeoutable.TimeoutListener {
 	}
 
 	public void timeoutElapsed(Timeoutable t) {
-		_curWeapon = Collectable.WeaponType.None;
+		//_curWeapon = Collectable.WeaponType.None;
 	}
 
 	public override float getTimeout() {
