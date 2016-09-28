@@ -1,0 +1,8 @@
+You need to wake up Player {0}.
+Player {0}, you fly like a space monkey.
+Player {0}, get a hold of yourself.
+You need to fix your attitude Player {0}.
+Where did you learn to fly Player {0}?
+Player {0}. OMG
+Player {0}, that's the worst flying I've ever seen.
+Player {0}, my mother would crush you in real combat.

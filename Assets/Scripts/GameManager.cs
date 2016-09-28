@@ -37,6 +37,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 
 	void Start () {
+		InsultManager.Instance.readInsults();
+
 		string[] joysticks = Input.GetJoystickNames();
 		foreach (string j in joysticks) {
 			Debug.Log("Found joystick " + j);
@@ -113,8 +115,10 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO add tags to constants
 		if (obj.tag == "spaceship" ) {
 			int id = obj.GetComponent<PlayerController>().Id;
-			_playerShips.Remove(id);
-			InsultManager.Instance.playerDied(id);
+			if (_playerShips.Remove(id)) {
+				Debug.Log(string.Format("player {0} died.", id));
+				InsultManager.Instance.playerDied(id);
+			}
 		}
 	}
 

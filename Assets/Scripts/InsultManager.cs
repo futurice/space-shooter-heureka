@@ -3,7 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class InsultManager : Singleton<InsultManager> {
+	
 	private int _lastKIA = 0;
+
+	private string[] _kiaInsults = new string[0];
+	private int _kiaIndex = 0;
+
+	public void readInsults() {
+		string[] lines = System.IO.File.ReadAllLines( Application.streamingAssetsPath + "/insults.txt");
+		if (lines != null && lines.Length > 0) {
+			_kiaInsults = lines;
+		}
+		else {
+			//let's put something
+			_kiaInsults = new string[1];
+			_kiaInsults[0] = "You need to wake up Player {0}.";
+		}
+	}
 
 	public void insultAboutSpeed(int id, List<Collectable> collectables) {
 		//Just for laughs
@@ -22,7 +38,10 @@ public class InsultManager : Singleton<InsultManager> {
 
 	public void playerDied(int id) {
 		if (_lastKIA == id) {
-			AudioManager.Instance.speak(string.Format("Player {0}, you fly like a space monkey.", id));
+			AudioManager.Instance.speak(string.Format(_kiaInsults[_kiaIndex++], id));
+			if (_kiaIndex >= _kiaInsults.Length) {
+				_kiaIndex = 0;
+			}
 			//this guy died twice in a row so he deserves an insult
 		}
 		_lastKIA = id;
