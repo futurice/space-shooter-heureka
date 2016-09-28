@@ -62,6 +62,9 @@ public class PlayerController : Timeoutable {
 			Vector3 curScale = this.gameObject.transform.localScale;
 			this.gameObject.transform.localScale = 2.0f * curScale;
 		}
+		else if (collectable.Type == Collectable.CollectableType.SpeedUp) {
+			InsultManager.Instance.insultAboutSpeed(Id, _collectables); 
+		}
 	}
 
 	void FixedUpdate() {
