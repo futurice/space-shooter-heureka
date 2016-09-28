@@ -9,6 +9,8 @@ public class AudioManager : Singleton<AudioManager> {
     [SerializeField]
     private GameObject _audioSourcePrefab = null;
 	[SerializeField]
+	private GameObject _audioSourceTTSPrefab = null;
+	[SerializeField]
 	private Voice _speakerVoice;
 
     private List<AudioSource> _currentlyPlaying = new List<AudioSource>();
@@ -111,7 +113,7 @@ public class AudioManager : Singleton<AudioManager> {
 		}
 		else
 		{
-			GameObject audioSource = Instantiate(_audioSourcePrefab) as GameObject;
+			GameObject audioSource = Instantiate(_audioSourceTTSPrefab) as GameObject;
 			audioSource.transform.SetParent(this.transform);
 			
 			
