@@ -51,7 +51,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 
 		initCollectableTimeout();
-
+		AudioManager.Instance.speak("Welcome Space Captains! Get ready and board your ships.");
 	}
 
 	private void initCollectableTimeout() {

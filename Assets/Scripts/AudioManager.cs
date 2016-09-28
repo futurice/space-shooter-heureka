@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Crosstales.RTVoice.Model;
+using Crosstales.RTVoice;
 
 public class AudioManager : Singleton<AudioManager> {
 
     [SerializeField]
     private GameObject _audioSourcePrefab = null;
+	[SerializeField]
+	private Voice _speakerVoice;
 
     private List<AudioSource> _currentlyPlaying = new List<AudioSource>();
 
@@ -52,6 +56,7 @@ public class AudioManager : Singleton<AudioManager> {
             Debug.Log("AudioManager Muted, not playing anything");
             return;
         }
+		Debug.Log("AudioManager play clip " + clip);
 
         string path = ClipPath(clip);
 		Debug.Assert(path != null);
@@ -61,6 +66,8 @@ public class AudioManager : Singleton<AudioManager> {
 			AudioClip playMe = Resources.Load<AudioClip>(path);
 			Debug.Assert(playMe != null);
 			if (playMe != null) {
+				Debug.Log("AudioManager clip loaded " + playMe);
+
 				//we have to use separate audiosources per clip, for polyphony
 				GameObject audioSource = Instantiate(_audioSourcePrefab) as GameObject;
 				audioSource.transform.SetParent(this.transform);
@@ -93,5 +100,24 @@ public class AudioManager : Singleton<AudioManager> {
         Destroy(source);
     }
 
+	public void speak(string speech) {
+		bool isNative = false;
+		float rate = 1.0f;
+		float vol = 1.0f;
+		float pitch = 1.0f;
+		if (isNative)
+		{
+			//Speaker.SpeakNative(speech, _speakerVoice, rate, vol, pitch);
+		}
+		else
+		{
+			GameObject audioSource = Instantiate(_audioSourcePrefab) as GameObject;
+			audioSource.transform.SetParent(this.transform);
+			
+			
+			AudioSource source = audioSource.GetComponent<AudioSource>();
 
+			Speaker.Speak(speech, source, _speakerVoice, true, rate, vol, "", pitch);
+		}
+	}
 }
