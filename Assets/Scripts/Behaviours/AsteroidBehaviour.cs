@@ -18,6 +18,10 @@ public class AsteroidBehaviour : MonoBehaviour {
 			GameManager.Instance.destroyAsteroid(this.gameObject);
 			Destroy(other.gameObject);
 		}
+		else {
+			//give it a little spin
+			GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
+        }
 	}
 
 	public virtual void destroyMe() {
