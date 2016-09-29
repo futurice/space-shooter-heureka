@@ -12,6 +12,12 @@ public class ProjectileBehaviour : MonoBehaviour {
 		get { return _source; }
 	}
 
+	public int SourceId {
+		get {
+			return _source.GetComponent<PlayerController>().Id;
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 		this.gameObject.transform.position += transform.forward * Time.deltaTime * _speed;

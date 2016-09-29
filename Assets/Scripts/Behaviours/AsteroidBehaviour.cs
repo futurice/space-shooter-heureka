@@ -14,7 +14,9 @@ public class AsteroidBehaviour : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "projectile") {
-			//destroyMe();
+			int sourceId = other.GetComponent<ProjectileBehaviour>().SourceId;
+			ScoreManager.Instance.addPoints(sourceId, GameConstants.POINTS_FOR_ASTEROID);
+
 			GameManager.Instance.destroyAsteroid(this.gameObject);
 			Destroy(other.gameObject);
 		}

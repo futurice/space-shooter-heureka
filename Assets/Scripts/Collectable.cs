@@ -28,6 +28,15 @@ public class Collectable {
 		get { return _weapon; }
 	}
 
+	public int Points {
+		get { 
+			if (_type == CollectableType.BonusPoints)
+				return GameConstants.POINTS_FOR_BONUS;
+			else 
+				return GameConstants.POINTS_FOR_COLLECTABLE;
+		}
+	}
+
 	public float SpeedUpFactor { 
 		get {
 			switch(_type) {

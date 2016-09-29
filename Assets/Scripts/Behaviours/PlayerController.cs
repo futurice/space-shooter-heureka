@@ -50,10 +50,11 @@ public class PlayerController : Timeoutable {
 	public void addCollectable(Collectable collectable) {
 		//TODO use these on update / input, etc
 		//TODO remove it automatically after timeout, run out of ammo, etc
+		Debug.Log (string.Format ("SpaceShip {0}: Adding collectable of type: {1} + points {2}", Id, collectable.Type, collectable.Points));
 		_collectables.Add(collectable);
-		Debug.Log (string.Format ("SpaceShip {0}: Adding collectable of type: {1}", Id, collectable.Type));
+		ScoreManager.Instance.addPoints(Id, collectable.Points);
 
-		if (collectable.Type == Collectable.CollectableType.Weapon) {
+        if (collectable.Type == Collectable.CollectableType.Weapon) {
 			GetComponent<WeaponLauncher>().addWeapon(collectable);
 		}
 		else if (collectable.Type == Collectable.CollectableType.Enlarge) {
@@ -110,6 +111,9 @@ public class PlayerController : Timeoutable {
 		if (other.tag == "projectile") {
 			ProjectileBehaviour projectile = other.gameObject.GetComponent<ProjectileBehaviour>();
 			if (projectile.Source != this.gameObject) {
+				int sourceId = projectile.SourceId;
+				ScoreManager.Instance.addPoints(sourceId, GameConstants.POINTS_FOR_KILL);
+
 				Destroy(other.gameObject);
 				GameManager.Instance.destroyWithExplosion(this.gameObject);
 			}

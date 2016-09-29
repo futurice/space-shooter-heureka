@@ -38,6 +38,13 @@ public class GameConstants {
 
 	public const float NUMBER_OF_ASTEROIDS = 25; 
 
+	public const int POINTS_FOR_BONUS = 1000;
+	public const int POINTS_FOR_KILL = 500;
+	public const int POINTS_FOR_COLLECTABLE = 250;
+	public const int POINTS_FOR_ASTEROID = 25;
+	public const int POINTS_FOR_DYING = -100;
+	//Points for each second of lifetime? could increase over time?
+
 	static GameConstants() {
 		const float angleInc = 2.0f * Mathf.PI / NUMBER_OF_PLAYERS;
 

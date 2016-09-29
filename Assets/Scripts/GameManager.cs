@@ -116,6 +116,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		if (obj.tag == "spaceship" ) {
 			int id = obj.GetComponent<PlayerController>().Id;
 			if (_playerShips.Remove(id)) {
+				ScoreManager.Instance.addPoints(id, GameConstants.POINTS_FOR_DYING);
+
 				Debug.Log(string.Format("player {0} died.", id));
 				InsultManager.Instance.playerDied(id);
 			}
