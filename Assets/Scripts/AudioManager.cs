@@ -58,7 +58,7 @@ public class AudioManager : Singleton<AudioManager> {
             Debug.Log("AudioManager Muted, not playing anything");
             return;
         }
-		Debug.Log("AudioManager play clip " + clip);
+		//Debug.Log("AudioManager play clip " + clip);
 
         string path = ClipPath(clip);
 		Debug.Assert(path != null);
@@ -68,7 +68,7 @@ public class AudioManager : Singleton<AudioManager> {
 			AudioClip playMe = Resources.Load<AudioClip>(path);
 			Debug.Assert(playMe != null);
 			if (playMe != null) {
-				Debug.Log("AudioManager clip loaded " + playMe);
+				//Debug.Log("AudioManager clip loaded " + playMe);
 
 				//we have to use separate audiosources per clip, for polyphony
 				GameObject audioSource = Instantiate(_audioSourcePrefab) as GameObject;
