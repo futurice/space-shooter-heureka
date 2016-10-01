@@ -42,7 +42,7 @@ public class WeaponLauncher : Timeoutable, Timeoutable.TimeoutListener {
 
 			//TODO Select prefab based on weapontype
 
-			MeshCollider shipCollider = GetComponent<MeshCollider>();
+			Collider shipCollider = GetComponent<Collider>();
 
 			Vector3 shipDirection = this.transform.forward;
 			//let's try to position the projectile so it's ahead. Should take the max speed of the ship into account..
