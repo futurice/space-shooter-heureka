@@ -3,6 +3,9 @@ using System.Collections;
 
 public class SessionManager : Singleton<SessionManager> {
 
+	[SerializeField]
+	GameObject _introPoster;
+
 	enum GameState {
 		Idle,
 		Intro,
@@ -59,6 +62,8 @@ public class SessionManager : Singleton<SessionManager> {
 
 	void Start () {
 		InsultManager.Instance.readInsults();
+		_curState = GameState.Idle;
+		showIntroPoster(true);
     }
 
 	public float gameSessionLeft() {
@@ -68,6 +73,12 @@ public class SessionManager : Singleton<SessionManager> {
 	void initGame() {
 		_sessionId++;
 		ScoreManager.Instance.clearScores();
+	}
+
+	private void showIntroPoster(bool show) {
+		if (_introPoster != null) {
+			_introPoster.SetActive(show);
+		}
 	}
 
 	void gotoNextState() {
@@ -95,6 +106,8 @@ public class SessionManager : Singleton<SessionManager> {
 			InsultManager.Instance.tellHighscores(ScoreManager.Instance.ScoresSorted, newState == GameState.MidScores);
 
 		}
+		showIntroPoster(newState == GameState.Idle);
+
 		Debug.Log("Setting New State: " + newState);
 		CurrentState = newState;
 		_timer = 0.0f;
