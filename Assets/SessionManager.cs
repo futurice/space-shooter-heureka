@@ -40,7 +40,7 @@ public class SessionManager : Singleton<SessionManager> {
 			switch (_curState) {
 			case GameState.Idle: return -1.0f;
 			case GameState.Intro: return 5.0f;
-			case GameState.Instructions: return 60.0f;
+			case GameState.Instructions: return 65.0f;
 			case GameState.Round1: return 180.0f;
 			case GameState.Round1Cleanup: return 5.0f;
             case GameState.MidScores: return 15.0f;
