@@ -15,6 +15,11 @@ public class ScoreManager : Singleton<ScoreManager> {
 		get { return new Dictionary<int, int>(_scores); }
 	}
 
+	private int _highScoreOfToday = 0;//TODO init at startup from file
+	public int HighScore {
+		get { return _highScoreOfToday; }
+	}
+
 	public List<KeyValuePair<int, int>> ScoresSorted {
 		get { 
 			List<KeyValuePair<int, int>> scores = new List<KeyValuePair<int, int>>();
@@ -31,7 +36,7 @@ public class ScoreManager : Singleton<ScoreManager> {
 	}
 
 
-	public void newSession() {
+	public void clearScores() {
 		_scores = new Dictionary<int, int>();
 	}
 
@@ -43,6 +48,10 @@ public class ScoreManager : Singleton<ScoreManager> {
 			foreach(KeyValuePair<int, int> s in scores) {
 				Debug.Log(string.Format("player {0} has points {1}", s.Key, s.Value));
 				sw.WriteLine(string.Format("{0};player {1};{2}", sessionId, s.Key, s.Value));
+
+				if (s.Value >= _highScoreOfToday) {
+					_highScoreOfToday = s.Value;
+				}
 			}
 		}
 	}

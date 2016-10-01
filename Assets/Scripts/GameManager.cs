@@ -59,7 +59,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		initCollectableTimeout();
 		_warningGiven = false;
 		_isGameActive = true;
-		AudioManager.Instance.speak("Go!");
+		AudioManager.Instance.speak("Board your ships.");
 	}
 
 	public void stopRound() {

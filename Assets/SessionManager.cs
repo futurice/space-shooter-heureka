@@ -38,12 +38,12 @@ public class SessionManager : Singleton<SessionManager> {
 			case GameState.Idle: return -1.0f;
 			case GameState.Intro: return 10.0f;
 			case GameState.Instructions: return 10.0f;
-			case GameState.Round1: return 40.0f;
+			case GameState.Round1: return 180.0f;
 			case GameState.Round1Cleanup: return 5.0f;
-            case GameState.MidScores: return 10.0f;
-			case GameState.Round2: return 40.0f;
+            case GameState.MidScores: return 15.0f;
+			case GameState.Round2: return 180.0f;
 			case GameState.Round2Cleanup: return 5.0f;
-			case GameState.FinalScores: return 10.0f;
+			case GameState.FinalScores: return 120.0f;
 			}
 			return -1.0f;
 		}
@@ -67,6 +67,7 @@ public class SessionManager : Singleton<SessionManager> {
 
 	void initGame() {
 		_sessionId++;
+		ScoreManager.Instance.clearScores();
 	}
 
 	void gotoNextState() {
@@ -90,8 +91,9 @@ public class SessionManager : Singleton<SessionManager> {
 			GameManager.Instance.stopRound();
         }
 		else if (newState == GameState.MidScores || newState == GameState.FinalScores) {
-			//TODO show scores
 			ScoreManager.Instance.saveSession(_sessionId);
+			InsultManager.Instance.tellHighscores(ScoreManager.Instance.ScoresSorted, newState == GameState.MidScores);
+
 		}
 		Debug.Log("Setting New State: " + newState);
 		CurrentState = newState;

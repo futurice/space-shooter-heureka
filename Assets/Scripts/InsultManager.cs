@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 //TODO rename
 public class InsultManager : Singleton<InsultManager> {
@@ -27,9 +28,44 @@ public class InsultManager : Singleton<InsultManager> {
 	}
 	
 	public void tellIntro() {
-		AudioManager.Instance.speak("Welcome Space Cadets! This is Admiral Marcus, Commander of the USS Futurice. Get ready and board your ships.");	
+		AudioManager.Instance.speak("Welcome Space Cadets! This is Admiral Marcus, Commander of the USS Futurice.");	
 	}
-	
+
+	public void tellHighscores(List<KeyValuePair<int, int>> scores, bool firstRound) {
+		StringBuilder s = new StringBuilder();
+		s.AppendLine("Here are the scores.");
+		if (scores.Count > 0) {
+			int best = scores[0].Key;
+			s.AppendLine(string.Format("Well done player {0}.", best));
+
+			//TODO speak if total high score
+            int bestScore = scores[0].Value;
+			if (bestScore >= ScoreManager.Instance.HighScore) {
+				s.AppendLine("This is a new high score!");
+			}
+
+			if (scores.Count > 1) {
+				int worst = scores[scores.Count - 1].Key;
+				//TODO read from file and add more
+				if (Random.value > 0.5f) {
+					s.AppendLine(string.Format("Player {0}, pathetic.", worst));
+                }
+                else {
+                    s.AppendLine(string.Format("Player {0}, you're dismissed.", worst));
+                }
+            }
+        }
+		if (firstRound) {
+			s.AppendLine("Cadets, now focus, this is your last chance.");
+		}
+		else {
+			s.AppendLine("I'd like the winners to report to the deck, we have a surprise for you. All you others can piss off");
+        }
+
+		AudioManager.Instance.speak(s.ToString());	
+    }
+    
+    
 	public void insultAboutSpeed(int id, List<Collectable> collectables) {
 		//Just for laughs
 		int count = 0;
