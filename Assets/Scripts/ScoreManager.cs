@@ -4,21 +4,25 @@ using System.Collections.Generic;
 
 public class ScoreManager : Singleton<ScoreManager> {
 
-	public class Score {
-		public int score;
-		public int id;
-	}
-
 	Dictionary<int, int> _scores = new Dictionary<int, int>();
 	public Dictionary<int, int> Scores {
 		get { return new Dictionary<int, int>(_scores); }
 	}
-	/*
-	public List<Score> ScoresSorted {
+
+	public List<KeyValuePair<int, int>> ScoresSorted {
 		get { 
-			_scores. 
+			List<KeyValuePair<int, int>> scores = new List<KeyValuePair<int, int>>();
+			foreach (int id in _scores.Keys) {
+				scores.Add(new KeyValuePair<int, int>(id, _scores[id]));
+			}
+			scores.Sort((x, y) => {
+				if (x.Value > y.Value) return -1; 
+				else if (x.Value < y.Value) return 1;
+				else return 0;
+			});
+			return scores;
 		}
-	}*/
+	}
 
 
 	public void newSession() {
@@ -35,12 +39,13 @@ public class ScoreManager : Singleton<ScoreManager> {
 		_scores[playerId] = oldScore + points;
 		Debug.Log(string.Format("player {0} has now points {1}", playerId, _scores[playerId])); 
 
-		Debug.Log(_scores.ToString());
-		//TODO if same player get's consecutive points, then play some audio clip / TTS?
-		/*
-		if (_scores.ContainsKey(playerId)) {
+		//printScores();
+	}
 
-		}*/
-
+	public void printScores() {
+		List<KeyValuePair<int, int>> scores = ScoresSorted;
+		foreach(KeyValuePair<int, int> s in scores) {
+			Debug.Log(string.Format("player {0} has points {1}", s.Key, s.Value));
+		}
 	}
 }
