@@ -120,7 +120,7 @@ public class PlayerController : Timeoutable {
 		}
 		else if (other.tag == "spaceship") {
 			GameManager.Instance.destroyWithExplosion(this.gameObject);
-			GameManager.Instance.destroyWithExplosion(other.gameObject);
+			GameManager.Instance.destroyWithExplosion(other.gameObject, true, false);
         }
 	}
 

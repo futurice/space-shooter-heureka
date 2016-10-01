@@ -128,9 +128,6 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	public void destroyWithExplosion(GameObject obj, bool scores, bool sounds) {
 		animateExplosion(obj.transform);
 		Destroy(obj);
-		if (sounds) {
-			AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
-		}
 
 		//TODO add tags to constants
 		if (obj.tag == "spaceship" ) {
@@ -142,6 +139,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 				}
 				if (sounds) {
 					InsultManager.Instance.playerDied(id);
+					AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
 				}
 			}
 		}
