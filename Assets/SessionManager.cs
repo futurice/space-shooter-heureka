@@ -8,8 +8,10 @@ public class SessionManager : Singleton<SessionManager> {
 		Intro,
 		Instructions,
 		Round1,
+		Round1Cleanup,
 		MidScores,
 		Round2,
+		Round2Cleanup,
 		FinalScores
 	}
 
@@ -19,10 +21,12 @@ public class SessionManager : Singleton<SessionManager> {
 			case GameState.Idle: return GameState.Intro;
 			case GameState.Intro: return GameState.Instructions;
 			case GameState.Instructions: return GameState.Round1;
-			case GameState.Round1: return GameState.MidScores;
-			case GameState.MidScores: return GameState.Round2;
-			case GameState.Round2: return GameState.FinalScores;
-			case GameState.FinalScores: return GameState.Idle;
+			case GameState.Round1: return GameState.Round1Cleanup;
+			case GameState.Round1Cleanup: return GameState.MidScores;
+            case GameState.MidScores: return GameState.Round2;
+			case GameState.Round2: return GameState.Round2Cleanup;
+			case GameState.Round2Cleanup: return GameState.FinalScores;
+            case GameState.FinalScores: return GameState.Idle;
 			}
 			return GameState.Idle;
 		}
@@ -35,8 +39,10 @@ public class SessionManager : Singleton<SessionManager> {
 			case GameState.Intro: return 10.0f;
 			case GameState.Instructions: return 10.0f;
 			case GameState.Round1: return 40.0f;
-			case GameState.MidScores: return 10.0f;
+			case GameState.Round1Cleanup: return 5.0f;
+            case GameState.MidScores: return 10.0f;
 			case GameState.Round2: return 40.0f;
+			case GameState.Round2Cleanup: return 5.0f;
 			case GameState.FinalScores: return 10.0f;
 			}
 			return -1.0f;
@@ -49,18 +55,17 @@ public class SessionManager : Singleton<SessionManager> {
 	}
 
 	private float _timer = 0.0f;
-	private int _sessionId = 0;
+	private int _sessionId = 0;//TODO This should be initialized from some persistent store, now always starts from 0 
 
 	void Start () {
-		initSession();
-	}
+		InsultManager.Instance.readInsults();
+    }
 
 	public float gameSessionLeft() {
 		return StateLength - _timer;
 	}
 
-	void initSession() {
-		InsultManager.Instance.readInsults();
+	void initGame() {
 		_sessionId++;
 	}
 
@@ -69,9 +74,8 @@ public class SessionManager : Singleton<SessionManager> {
 
 		if (newState == GameState.Idle) {
 			//we're just waiting this to start
-			initSession();
 		}
-		if (newState == GameState.Intro) {
+		else if (newState == GameState.Intro) {
 			InsultManager.Instance.tellIntro();
 			//TODO possibly show some video?
 		}
@@ -79,15 +83,14 @@ public class SessionManager : Singleton<SessionManager> {
 			InsultManager.Instance.tellInstructions();
 		}
 		else if (newState == GameState.Round1 || newState == GameState.Round2) {
+			initGame();
 			GameManager.Instance.startNewRound();
 		}
-		else if (newState == GameState.MidScores) {
-			//TODO show scores
+		else if (newState == GameState.Round1Cleanup || newState == GameState.Round2Cleanup) {
 			GameManager.Instance.stopRound();
-		}
-		else if (newState == GameState.FinalScores) {
+        }
+		else if (newState == GameState.MidScores || newState == GameState.FinalScores) {
 			//TODO show scores
-			GameManager.Instance.stopRound();
 			ScoreManager.Instance.saveSession(_sessionId);
 		}
 		Debug.Log("Setting New State: " + newState);

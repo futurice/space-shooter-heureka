@@ -59,12 +59,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		initCollectableTimeout();
 		_warningGiven = false;
 		_isGameActive = true;
+		AudioManager.Instance.speak("Go!");
 	}
 
 	public void stopRound() {
 		//TODO modify state so players cannot re-create themselves
 		destroyAll();
 		_isGameActive = false;
+		AudioManager.Instance.speak("Time's up.");
 	}
 
 	private void initCollectableTimeout() {
