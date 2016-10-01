@@ -22,7 +22,7 @@ public class SessionManager : Singleton<SessionManager> {
 			case GameState.Round1: return GameState.MidScores;
 			case GameState.MidScores: return GameState.Round2;
 			case GameState.Round2: return GameState.FinalScores;
-			case GameState.FinalScores: return GameState.Intro;
+			case GameState.FinalScores: return GameState.Idle;
 			}
 			return GameState.Idle;
 		}
@@ -33,11 +33,11 @@ public class SessionManager : Singleton<SessionManager> {
 			switch (_curState) {
 			case GameState.Idle: return -1.0f;
 			case GameState.Intro: return 10.0f;
-			case GameState.Instructions: return 30.0f;
-			case GameState.Round1: return 150.0f;
-			case GameState.MidScores: return 20.0f;
-			case GameState.Round2: return 150.0f;
-			case GameState.FinalScores: return 20.0f;
+			case GameState.Instructions: return 10.0f;
+			case GameState.Round1: return 40.0f;
+			case GameState.MidScores: return 10.0f;
+			case GameState.Round2: return 40.0f;
+			case GameState.FinalScores: return 10.0f;
 			}
 			return -1.0f;
 		}
@@ -53,7 +53,10 @@ public class SessionManager : Singleton<SessionManager> {
 
 	void Start () {
 		initSession();
-		InsultManager.Instance.tellIntro();
+	}
+
+	public float gameSessionLeft() {
+		return StateLength - _timer;
 	}
 
 	void initSession() {
@@ -101,11 +104,16 @@ public class SessionManager : Singleton<SessionManager> {
 		}
 
 		if (Input.GetKeyDown(KeyCode.Return)) {
-			Debug.LogWarning("Moving on to next phase");
+			Debug.LogWarning("Moving on to next phase by force");
 			gotoNextState();
-			return;
 		}
-
-		_timer += Time.deltaTime;
+		else {
+			_timer += Time.deltaTime;
+			
+			if (CurrentState != GameState.Idle && _timer >= StateLength) {
+				Debug.LogWarning("Moving on to next phase by timeout");
+	            gotoNextState();
+	        }
+		}
 	}
 }

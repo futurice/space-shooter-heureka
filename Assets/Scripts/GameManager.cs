@@ -24,8 +24,11 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private List<GameObject> _asteroids = new List<GameObject>();
 
 	private float _secsUntilNextCollectable = 0.0f;
+	private bool _warningGiven = false;
 
 	private Dictionary<int, PlayerState> _playerShips = new Dictionary<int, PlayerState>();
+
+	private bool _isGameActive = false;
 
   	private class PlayerState {
 		public PlayerState(GameObject obj) {
@@ -54,11 +57,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 
 		initCollectableTimeout();
+		_warningGiven = false;
+		_isGameActive = true;
 	}
 
 	public void stopRound() {
 		//TODO modify state so players cannot re-create themselves
 		destroyAll();
+		_isGameActive = false;
 	}
 
 	private void initCollectableTimeout() {
@@ -74,6 +80,9 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	}
 
 	void Update() {
+		if (!_isGameActive) {
+			return;
+		}
 
 		//TODO remove direct button listening from this class... abstract it somewhere and just get events, etc
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
@@ -96,7 +105,13 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			initCollectableTimeout();
 		}
 
-
+		if (!_warningGiven) {
+			float secsLeft = 30.0f;
+			if (SessionManager.Instance.gameSessionLeft() < secsLeft) {
+				AudioManager.Instance.speak("You have thirty seconds");
+				_warningGiven = true;
+			}
+		}
 	}
 
 	/**

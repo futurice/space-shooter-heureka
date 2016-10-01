@@ -23,7 +23,7 @@ public class InsultManager : Singleton<InsultManager> {
 	}
 
 	public void tellInstructions() {
-		AudioManager.Instance.speak("Listen up cadets, I'm not gonna tell this twice.");
+		AudioManager.Instance.speak("Listen up cadets, I'm not going to tell this twice.");
 	}
 	
 	public void tellIntro() {
