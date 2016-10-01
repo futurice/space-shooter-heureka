@@ -39,8 +39,8 @@ public class SessionManager : Singleton<SessionManager> {
 		get {
 			switch (_curState) {
 			case GameState.Idle: return -1.0f;
-			case GameState.Intro: return 10.0f;
-			case GameState.Instructions: return 10.0f;
+			case GameState.Intro: return 5.0f;
+			case GameState.Instructions: return 60.0f;
 			case GameState.Round1: return 180.0f;
 			case GameState.Round1Cleanup: return 5.0f;
             case GameState.MidScores: return 15.0f;
@@ -61,7 +61,7 @@ public class SessionManager : Singleton<SessionManager> {
 	private int _sessionId = 0;//TODO This should be initialized from some persistent store, now always starts from 0 
 
 	void Start () {
-		InsultManager.Instance.readInsults();
+		InsultManager.Instance.readAllSpeeches();
 		_curState = GameState.Idle;
 		showIntroPoster(true);
     }
@@ -88,8 +88,8 @@ public class SessionManager : Singleton<SessionManager> {
 			//we're just waiting this to start
 		}
 		else if (newState == GameState.Intro) {
-			InsultManager.Instance.tellIntro();
-			//TODO possibly show some video?
+			//InsultManager.Instance.tellIntro();
+			//TODO possibly show some video? or just play some music, etc
 		}
 		else if (newState == GameState.Instructions) {
 			InsultManager.Instance.tellInstructions();

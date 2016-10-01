@@ -11,7 +11,9 @@ public class InsultManager : Singleton<InsultManager> {
 	private string[] _kiaInsults = new string[0];
 	private int _kiaIndex = 0;
 
-	public void readInsults() {
+	private string _instructions = "";
+
+	public void readAllSpeeches() {
 		string[] lines = System.IO.File.ReadAllLines( Application.streamingAssetsPath + "/insults.txt");
 		if (lines != null && lines.Length > 0) {
 			_kiaInsults = lines;
@@ -21,10 +23,13 @@ public class InsultManager : Singleton<InsultManager> {
 			_kiaInsults = new string[1];
 			_kiaInsults[0] = "You need to wake up Player {0}.";
 		}
+
+		_instructions = System.IO.File.ReadAllText(Application.streamingAssetsPath + "/instructions.txt");
+
 	}
 
 	public void tellInstructions() {
-		AudioManager.Instance.speak("Listen up cadets, I'm not going to tell this twice.");
+		AudioManager.Instance.speak(_instructions);
 	}
 	
 	public void tellIntro() {
