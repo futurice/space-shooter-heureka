@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.IO;
 
 public class ScoreManager : Singleton<ScoreManager> {
+
+	private string HighScoreFilePath {
+		get { return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/high-scores.csv"; }
+	}
 
 	Dictionary<int, int> _scores = new Dictionary<int, int>();
 	public Dictionary<int, int> Scores {
@@ -29,8 +35,16 @@ public class ScoreManager : Singleton<ScoreManager> {
 		_scores = new Dictionary<int, int>();
 	}
 
-	public void saveSession() {
-		//TODO write to CSV / SQLite-database
+	public void saveSession(int sessionId) {
+		string path = HighScoreFilePath;
+		Debug.Log("Writing high scores to file: " + path);
+		using (StreamWriter sw = File.AppendText(path)) {
+			List<KeyValuePair<int, int>> scores = ScoresSorted;
+			foreach(KeyValuePair<int, int> s in scores) {
+				Debug.Log(string.Format("player {0} has points {1}", s.Key, s.Value));
+				sw.WriteLine(string.Format("{0};player {1};{2}", sessionId, s.Key, s.Value));
+			}
+		}
 	}
 
 	public void addPoints(int playerId, int points) {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//TODO rename
 public class InsultManager : Singleton<InsultManager> {
 	
 	private int _lastKIA = 0;
@@ -21,6 +22,14 @@ public class InsultManager : Singleton<InsultManager> {
 		}
 	}
 
+	public void tellInstructions() {
+		AudioManager.Instance.speak("Listen up cadets, I'm not gonna tell this twice.");
+	}
+	
+	public void tellIntro() {
+		AudioManager.Instance.speak("Welcome Space Cadets! This is Admiral Marcus, Commander of the USS Futurice. Get ready and board your ships.");	
+	}
+	
 	public void insultAboutSpeed(int id, List<Collectable> collectables) {
 		//Just for laughs
 		int count = 0;

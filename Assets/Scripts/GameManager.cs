@@ -35,25 +35,30 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		public float _idleTime = 0.0f;
 	}
 
-
-	void Start () {
-		InsultManager.Instance.readInsults();
-
+	void Start() {
 		string[] joysticks = Input.GetJoystickNames();
 		foreach (string j in joysticks) {
 			Debug.Log("Found joystick " + j);
 		}
 
-		//TODO enumerate min and max
-		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
-			createPlayer(id);
-		}
 		for (int n = 0; n < GameConstants.NUMBER_OF_ASTEROIDS; n++) {
 			createAsteroid();
 		}
 
+	}
+
+	public void startNewRound () {
+		//TODO enumerate min and max
+		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
+			createPlayer(id);
+		}
+
 		initCollectableTimeout();
-		AudioManager.Instance.speak("Welcome Space Cadets! This is Admiral Marcus, Commander of the USS Futurice. Get ready and board your ships.");
+	}
+
+	public void stopRound() {
+		//TODO modify state so players cannot re-create themselves
+		destroyAll();
 	}
 
 	private void initCollectableTimeout() {
@@ -69,10 +74,6 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	}
 
 	void Update() {
-		if (Input.GetKey("escape")) {
-			Debug.LogWarning("Quitting application");
-			Application.Quit();
-        }
 
 		//TODO remove direct button listening from this class... abstract it somewhere and just get events, etc
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
@@ -104,25 +105,48 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	 * */
 
 	public void destroyWithExplosion(GameObject obj) {
-		GameObject explosion = Instantiate(_explosionPrefab) as GameObject;
-		explosion.transform.position = obj.transform.position;
-		float duration = explosion.GetComponent<ParticleSystem>().duration;
-		Destroy(explosion, duration);
+		destroyWithExplosion(obj, true, true);
+	}
 
+	public void destroyWithExplosion(GameObject obj, bool scores, bool sounds) {
+		animateExplosion(obj.transform);
 		Destroy(obj);
-		AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
+		if (sounds) {
+			AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
+		}
 
 		//TODO add tags to constants
 		if (obj.tag == "spaceship" ) {
 			int id = obj.GetComponent<PlayerController>().Id;
 			if (_playerShips.Remove(id)) {
-				ScoreManager.Instance.addPoints(id, GameConstants.POINTS_FOR_DYING);
-
 				Debug.Log(string.Format("player {0} died.", id));
-				InsultManager.Instance.playerDied(id);
+				if (scores) {
+					ScoreManager.Instance.addPoints(id, GameConstants.POINTS_FOR_DYING);
+				}
+				if (sounds) {
+					InsultManager.Instance.playerDied(id);
+				}
 			}
 		}
 	}
+
+	private void destroyAll() {
+		foreach(PlayerState s in _playerShips.Values) {
+			GameObject obj = s._ship;
+			animateExplosion(obj.transform);
+			Destroy(obj);
+		}
+		_playerShips.Clear();
+		AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
+	}
+
+	private void animateExplosion(Transform t) {
+		GameObject explosion = Instantiate(_explosionPrefab) as GameObject;
+		explosion.transform.position = t.position;
+		float duration = explosion.GetComponent<ParticleSystem>().duration;
+		Destroy(explosion, duration);
+	}
+
 
 	public void destroyAsteroid(GameObject obj) {
 		Debug.Log("destroy asteroid");
@@ -162,7 +186,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO refactor tags out, use method accesesor for this feature
 		if (t.tag == "spaceship") {
 			//Invoked by the Controllers after a timeout
-			destroyWithExplosion(t.gameObject);
+			destroyWithExplosion(t.gameObject, false, false);
 		}
 		else {
 			Destroy(t.gameObject);
