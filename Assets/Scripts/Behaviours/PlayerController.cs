@@ -2,12 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class Boundary
-{
-	public float xMin, xMax, zMin, zMax;
-}
-
 public class PlayerController : Timeoutable {
 
 	[SerializeField]
@@ -17,9 +11,9 @@ public class PlayerController : Timeoutable {
 	private float _rotationSpeed = 5.0f;
 	
 	[SerializeField]
-	private Boundary _boundary;//TODO remove and use the boundary gameobject in the scene
+	private Transform _transformLimits;
 
-	private List<Collectable> _collectables = new List<Collectable>();//TODO add timestamp, so we can 
+    private List<Collectable> _collectables = new List<Collectable>();//TODO add timestamp, so we can 
 
 	private bool _hasInput = false;
 
@@ -92,11 +86,18 @@ public class PlayerController : Timeoutable {
 		rb.transform.position += transform.forward * Time.deltaTime * currentSpeed * vertical;
 		rb.transform.position = Vector3.Scale(new Vector3(1.0f, 0.0f, 1.0f), rb.transform.position);
 
-		rb.position = new Vector3(
-			Mathf.Clamp (rb.position.x, _boundary.xMin, _boundary.xMax), 
-			0.0f, 
-			Mathf.Clamp (rb.position.z, _boundary.zMin, _boundary.zMax));
+		//limit the position to stay inside the game area. not 100% mathematically correct but good enough
+		Collider shipCollider = GetComponent<Collider>();
+		Vector3 shipExtents = 1.1f * shipCollider.bounds.extents;//works without the factor, but put it just-in-case
 
+		float xMin = -1*(_transformLimits.localScale.x / 2) + shipExtents.x;
+		float xMax = (_transformLimits.localScale.x / 2) - shipExtents.x;
+		float zMin = -1*(_transformLimits.localScale.z / 2) + shipExtents.z;
+		float zMax = (_transformLimits.localScale.z / 2) - shipExtents.z;
+		rb.position = new Vector3(
+			Mathf.Clamp (rb.position.x, xMin, xMax), 
+			0.0f, 
+			Mathf.Clamp (rb.position.z, zMin, zMax));
 	}
 
 	private float getSpeedFactor() {
