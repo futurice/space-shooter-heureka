@@ -21,8 +21,18 @@ public class AsteroidBehaviour : MonoBehaviour {
 			Destroy(other.gameObject);
 		}
 		else {
-			//give it a little spin
-			GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
+            //some refactoring would be in place..
+            if (other.tag == "spaceship" && other.gameObject.GetComponent<PlayerController>().IsEnlargened) {
+                int sourceId = other.gameObject.GetComponent<PlayerController>().Id;
+                ScoreManager.Instance.addPoints(sourceId, GameConstants.POINTS_FOR_ASTEROID);
+
+                GameManager.Instance.destroyAsteroid(this.gameObject);
+            }
+            else {
+                //give it a little spin
+                GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
+            }
+			
         }
 	}
 

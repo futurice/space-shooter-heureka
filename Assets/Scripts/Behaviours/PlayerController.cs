@@ -23,6 +23,11 @@ public class PlayerController : Timeoutable {
 		get { return _id; }
 	}
 
+    private bool _isEnlargened = false;
+    public bool IsEnlargened {
+        get { return _isEnlargened; }
+    }
+
 	private GameConstants.PlayerKeys _keys = new GameConstants.PlayerKeys(0);
 
 	public void setPlayerKeys(GameConstants.PlayerKeys keys) {
@@ -52,15 +57,24 @@ public class PlayerController : Timeoutable {
 			GetComponent<WeaponLauncher>().addWeapon(collectable);
 		}
 		else if (collectable.Type == Collectable.CollectableType.Enlarge) {
-			//TODO tween
-			//TODO this should also scale ammunition. and perhaps the exlosion? :D
-			Vector3 curScale = this.gameObject.transform.localScale;
-			this.gameObject.transform.localScale = 2.0f * curScale;
+            enlarge();
 		}
 		else if (collectable.Type == Collectable.CollectableType.SpeedUp) {
 			InsultManager.Instance.insultAboutSpeed(Id, _collectables); 
 		}
 	}
+
+    private void enlarge() {
+        if (_isEnlargened) {
+            Debug.Log(string.Format("Ship {0} is already enlargened, won't do it twice", Id));
+        }
+        else {
+            _isEnlargened = true;
+            //TODO tween
+            Vector3 curScale = this.gameObject.transform.localScale;
+            this.gameObject.transform.localScale = 2.5f * curScale;
+        }
+    }
 
 	void FixedUpdate() {
 		float horizontal = Input.GetAxis(_keys.HorizontalAxis);
@@ -120,8 +134,28 @@ public class PlayerController : Timeoutable {
 			}
 		}
 		else if (other.tag == "spaceship") {
-			GameManager.Instance.destroyWithExplosion(this.gameObject);
-			GameManager.Instance.destroyWithExplosion(other.gameObject, true, false);
+            PlayerController otherPlayer = other.gameObject.GetComponent<PlayerController>();
+
+            bool thisEnlargend = IsEnlargened;
+            bool thatEnlargend = otherPlayer.IsEnlargened;
+            bool both = thisEnlargend && thatEnlargend;
+            bool neither = !thisEnlargend && !thatEnlargend;
+            if (both || neither) {
+                GameManager.Instance.destroyWithExplosion(this.gameObject);
+                GameManager.Instance.destroyWithExplosion(other.gameObject, true, false);
+            }
+            else if (thisEnlargend) {
+                GameManager.Instance.destroyWithExplosion(other.gameObject, true, true);
+                ScoreManager.Instance.addPoints(Id, GameConstants.POINTS_FOR_KILL);
+            }
+            else if (thatEnlargend) {
+                GameManager.Instance.destroyWithExplosion(this.gameObject);
+                ScoreManager.Instance.addPoints(otherPlayer.Id, GameConstants.POINTS_FOR_KILL);
+            }
+            else {
+                Debug.LogError("BUG IN PLAYERCONTROLLER");
+                Debug.Assert(true);
+            }
         }
 	}
 
