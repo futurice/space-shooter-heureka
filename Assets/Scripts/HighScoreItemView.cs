@@ -24,7 +24,7 @@ public class HighScoreItemView : MonoBehaviour
 		// Set the player score
 		if (score < 0)
 		{
-			_playerScoreText.text = string.Format ("-{0}", score);
+			_playerScoreText.text = string.Format ("{0}", score);
 		}
 		else
 		{

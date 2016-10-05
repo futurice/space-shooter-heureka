@@ -35,6 +35,36 @@ public class PlayerController : Timeoutable {
         get { return _isEnlargened; }
     }
 
+	private Rigidbody _rigidbody;
+
+	private Rigidbody Rigidbody
+	{
+		get
+		{
+			if (_rigidbody == null)
+			{
+				_rigidbody = GetComponent<Rigidbody> ();
+			}
+
+			return _rigidbody;
+		}
+	}
+
+	private Collider _shipCollider;
+
+	private Collider ShipCollider
+	{
+		get
+		{
+			if (_shipCollider == null)
+			{
+				_shipCollider = GetComponent<Collider> ();
+			}
+
+			return _shipCollider;
+		}
+	}
+
 	private GameConstants.PlayerKeys _keys = new GameConstants.PlayerKeys(0);
 
 	public void setPlayerKeys(GameConstants.PlayerKeys keys) {
@@ -88,38 +118,41 @@ public class PlayerController : Timeoutable {
 		float vertical = Input.GetAxis(_keys.VerticalAxis);
 		_hasInput = horizontal > 0.00001f || vertical > 0.000001f;
 
-		Rigidbody rb = GetComponent<Rigidbody> ();
+		Rigidbody rb = Rigidbody;
 
 		float speedFactor = getSpeedFactor();
-
 		float rotationSpeed = speedFactor * _rotationSpeed; 
-		rb.transform.Rotate(new Vector3(0.0f, rotationSpeed * horizontal, 0.0f));
-		rb.transform.eulerAngles = new Vector3(0.0f, rb.transform.rotation.eulerAngles.y, 0.0f);
+		float currentSpeed = speedFactor * _speed;
+
+		Quaternion rotation = transform.rotation * Quaternion.Euler (new Vector3(0.0f, rotationSpeed * horizontal, 0.0f));
+		rb.MoveRotation (rotation);
 
 		//Vector3 movement = new Vector3 (horizontal, 0.0f, vertical);
 		//TODO fix: move towards rotation head
-		Vector3 movement = new Vector3 (0.0f, 0.0f, vertical);
+		//Vector3 movement = new Vector3 (0.0f, 0.0f, vertical);
 		//let's remove the velocities in all other directions as the movement direction
-		rb.velocity = new Vector3(0.0f, 0.0f, rb.velocity.z);
+		//rb.velocity = new Vector3(0.0f, 0.0f, rb.velocity.z);
 
-		float currentSpeed = speedFactor * _speed;
-
-		rb.transform.position += transform.forward * Time.deltaTime * currentSpeed * vertical;
-		rb.transform.position = Vector3.Scale(new Vector3(1.0f, 0.0f, 1.0f), rb.transform.position);
+		Vector3 position = rb.position;
+		position += transform.forward * Time.deltaTime * currentSpeed * vertical;
+		position = Vector3.Scale (new Vector3 (1.0f, 0.0f, 1.0f), position);
 
 		//limit the position to stay inside the game area. not 100% mathematically correct but good enough
-		Collider shipCollider = GetComponent<Collider>();
-		Vector3 shipExtents = 1.1f * shipCollider.bounds.extents;//works without the factor, but put it just-in-case
+		Vector3 shipExtents = 1.1f * ShipCollider.bounds.extents;//works without the factor, but put it just-in-case
 
 		float xMin = -1*(_transformLimits.localScale.x / 2) + shipExtents.x;
 		float xMax = (_transformLimits.localScale.x / 2) - shipExtents.x;
 		float zMin = -1*(_transformLimits.localScale.z / 2) + shipExtents.z;
 		float zMax = (_transformLimits.localScale.z / 2) - shipExtents.z;
-		rb.position = new Vector3(
-			Mathf.Clamp (rb.position.x, xMin, xMax), 
+		position = new Vector3(
+			Mathf.Clamp (position.x, xMin, xMax), 
 			0.0f, 
-			Mathf.Clamp (rb.position.z, zMin, zMax));
+			Mathf.Clamp (position.z, zMin, zMax));
+
+		rb.MovePosition (position);
 	}
+
+	public float thrust = 3.0f;
 
 	private float getSpeedFactor() {
 		float speed = 1.0f;

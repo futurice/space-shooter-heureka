@@ -3,24 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
-
 	[SerializeField]
 	private GameObject _explosionPrefab;
-
-	[SerializeField]
-	private List<GameObject> _spaceShipPrefabs;
-
-	[SerializeField]
-	private Transform _homePlanet;
-
 	[SerializeField]
 	private Transform _gameArea;
 
+	[Header("Planets")]
+	[SerializeField]
+	private Transform _homePlanet;
+	[SerializeField]
+	private List<Rigidbody> _planets;
+
+	[Header("Players")]
+	[SerializeField]
+	private List<GameObject> _spaceShipPrefabs;
+	[SerializeField]
+	private Transform _playerContainer;
+
+	[Header ("Collectables")]
 	[SerializeField]
 	private GameObject _collectablePrefab;
+	[SerializeField]
+	private Transform _collectableContainer;
 
+	[Header ("Asteroids")]
 	[SerializeField]
 	private GameObject _asteroidPrefab;
+	[SerializeField]
+	private Transform _asteroidContainer;
+
 	private List<GameObject> _asteroids = new List<GameObject>();
 
 	private float _secsUntilNextCollectable = 0.0f;
@@ -30,12 +41,17 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	private bool _isGameActive = false;
 
-  	private class PlayerState {
-		public PlayerState(GameObject obj) {
+  	private class PlayerState
+	{
+		public GameObject 	_ship;
+		public Rigidbody 	_rigidbody;
+		public float 		_idleTime = 0.0f;
+
+		public PlayerState (GameObject obj)
+		{
 			_ship = obj;
+			_rigidbody = obj.GetComponent<Rigidbody> ();
 		}
-		public GameObject _ship;
-		public float _idleTime = 0.0f;
 	}
 
 	void Start() {
@@ -116,6 +132,33 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 	}
 
+	public float gravityForce = 100.0f;
+
+	void FixedUpdate ()
+	{
+		// Apply gravity towards planets to players
+		int numPlanets = _planets.Count;
+		int numPlayers = _playerShips.Count;
+
+		for (int i = 0; i < numPlanets; ++i)
+		{
+			Rigidbody planetRigidbody = _planets[i];
+
+			foreach (PlayerState player in _playerShips.Values)
+			{
+				// No movement towards the y direction (no depth)
+				Vector3 direction = (planetRigidbody.position - player._rigidbody.position);
+				direction.y = 0.0f;
+
+				float distSqr = direction.sqrMagnitude;
+				float magnitude = (gravityForce * planetRigidbody.mass * player._rigidbody.mass) / distSqr;
+				direction = direction.normalized;
+
+				player._rigidbody.AddForce (magnitude * direction * Time.fixedDeltaTime);
+			}
+		}
+	}
+
 	/**
 	 * Note! Create and Destroy spaceship instances ONLY through this class!
 	 * This singleton instance keeps the track who is spawned, when and where
@@ -180,7 +223,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private void createPlayer(int id) {
 		int index =  id % _spaceShipPrefabs.Count;
 		GameObject prefab = _spaceShipPrefabs[index];
-		GameObject ship = Instantiate(prefab) as GameObject;
+		GameObject ship = Instantiate (prefab, _playerContainer) as GameObject;
 		_playerShips[id] = new PlayerState(ship);
 
 		//init game controller keys. See "Project Settings > Input" where the id mapping is
@@ -214,7 +257,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 
 	private void createCollectable() {
-		GameObject collectable = Instantiate(_collectablePrefab) as GameObject;
+		GameObject collectable = Instantiate(_collectablePrefab, _collectableContainer) as GameObject;
 		float randomX = (Random.value - 0.5f) * _gameArea.localScale.x;
 		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
 
@@ -225,13 +268,17 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	private void createAsteroid() {
 		//TODO some animation
-		GameObject asteroid = Instantiate(_asteroidPrefab) as GameObject;
-		if (Random.value > 0.2f) {
+		GameObject asteroid = Instantiate (_asteroidPrefab, _asteroidContainer) as GameObject;
+
+		if (Random.value > 0.2f)
+		{
 			asteroid.AddComponent<AsteroidBehaviour>();
 		}
-		else {
+		else
+		{
 			asteroid.AddComponent<FallingAsteroidBehaviour>();
 		}
+
 		//TODO make sure it doesn't overlap with the planet
 		float randomX = (Random.value - 0.5f) * _gameArea.localScale.x;
 		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
