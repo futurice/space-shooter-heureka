@@ -3,7 +3,7 @@ using System.Collections;
 
 public class AsteroidBehaviour : MonoBehaviour {
 	[SerializeField]
-	private float _spinMagnitude = 5.0f;
+	protected float _spinMagnitude = 5.0f;
 
 
 	// Use this for initialization
