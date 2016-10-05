@@ -8,7 +8,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private GameObject _explosionPrefab;
 
 	[SerializeField]
-	private GameObject _spaceShipPrefab;
+	private List<GameObject> _spaceShipPrefabs;
 
 	[SerializeField]
 	private Transform _homePlanet;
@@ -178,7 +178,9 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	}
 
 	private void createPlayer(int id) {
-		GameObject ship = Instantiate(_spaceShipPrefab) as GameObject;
+		int index =  id % _spaceShipPrefabs.Count;
+		GameObject prefab = _spaceShipPrefabs[index];
+		GameObject ship = Instantiate(prefab) as GameObject;
 		_playerShips[id] = new PlayerState(ship);
 
 		//init game controller keys. See "Project Settings > Input" where the id mapping is
