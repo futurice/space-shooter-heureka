@@ -188,6 +188,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		PlayerController ctrl = ship.GetComponent<PlayerController>();
 		ctrl.setPlayerKeys(keys);
 		ctrl.Id = id;
+		ctrl.PlayerInformation = PlayerInformationManager.Instance.GetPlayerInformation (id);
+		ScoreManager.Instance.addPoints (id, 0);
 
 		ship.GetComponent<WeaponLauncher>().setFireKeyCode(keys.FireBtn);
 

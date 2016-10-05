@@ -23,6 +23,13 @@ public class PlayerController : Timeoutable {
 		get { return _id; }
 	}
 
+	private PlayerInformation _playerInformation;
+	public PlayerInformation PlayerInformation
+	{
+		get { return _playerInformation; 	}
+		set { _playerInformation = value; 	}
+	}
+
     private bool _isEnlargened = false;
     public bool IsEnlargened {
         get { return _isEnlargened; }
