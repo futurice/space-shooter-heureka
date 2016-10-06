@@ -14,7 +14,13 @@ public class PlayerInformation
 		protected set;
 	}
 
-	protected string ResourcePath
+	protected string SpriteResourcePath
+	{
+		get;
+		set;
+	}
+
+	protected string ExplosionResourcePath
 	{
 		get;
 		set;
@@ -29,17 +35,34 @@ public class PlayerInformation
 			if (_shipSilhouetteSprite == null)
 			{
 				// Load the sprite from resources
-				_shipSilhouetteSprite = Resources.Load<Sprite> (ResourcePath);
+				_shipSilhouetteSprite = Resources.Load<Sprite> (SpriteResourcePath);
 			}
 
 			return _shipSilhouetteSprite;
 		}
 	}
 
-	public PlayerInformation (string name, Color color, string resourcePath)
+	private GameObject _explosionPrefab;
+
+	public GameObject ExplosionPrefab
+	{
+		get
+		{
+			if (_explosionPrefab == null)
+			{
+				// Load the projectile explosion prefab from resources
+				_explosionPrefab = Resources.Load<GameObject> (ExplosionResourcePath);
+			}
+
+			return _explosionPrefab;
+		}
+	}
+
+	public PlayerInformation (string name, Color color, string spriteResourcePath, string explosionResourcePath)
 	{
 		this.Name = name;
 		this.Color = color;
-		this.ResourcePath = resourcePath;
+		this.SpriteResourcePath = spriteResourcePath;
+		this.ExplosionResourcePath = explosionResourcePath;
 	}
 }

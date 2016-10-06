@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FallingAsteroidBehaviour : AsteroidBehaviour {
-
+public class FallingAsteroidBehaviour : AsteroidBehaviour
+{
 	private bool _animate = false;
 	private float _timeAcc = 0.0f;
 	private float _scaleFactorPerFrame = 1.05f;//TODO calc from animation length 
 
 	private const float ANIMATION_LENGTH = 2.0f;
 
-	public override void destroyMe()
+	public override void DestroyMe (int playerId =-1)
 	{
 		_animate = true;
 		//give a little spin

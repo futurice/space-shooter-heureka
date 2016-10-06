@@ -1,31 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlanetBehaviour : MonoBehaviour {
+public class PlanetBehaviour : MonoBehaviour
+{
 	[SerializeField]
 	private float _rotationSpeed = 5.0f;
+	private Vector3 _direction = Vector3.zero;
 
-	private Vector3 _direction = new Vector3(0, 0, 0);
-	// Use this for initialization
-	void Start () {
+	private void Start ()
+	{
 		_direction = Random.insideUnitSphere;
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	private void Update ()
+	{
 		//Rigidbody rb = GetComponent<Rigidbody> ();
 		//rb.transform.Rotate(_rotationSpeed * _direction);
 		this.gameObject.transform.Rotate(_rotationSpeed * _direction);
 
 	}
 
-	void OnTriggerEnter(Collider other) {
-		if (other.tag == "projectile") {
-			GameManager.Instance.destroyWithExplosion(other.gameObject);
-			//Destroy(other.gameObject);
+	private void OnTriggerEnter (Collider other)
+	{
+		if (other.tag == "projectile")
+		{
+			GameManager.Instance.DestroyWithExplosion (other.gameObject, other.gameObject.GetComponent <ProjectileBehaviour> ().SourceId);
 		}
-		else if (other.tag == "spaceship") {
-			GameManager.Instance.destroyWithExplosion(other.gameObject);
+		else if (other.tag == "spaceship")
+		{
+			GameManager.Instance.DestroyWithExplosion (other.gameObject, other.gameObject.GetComponent<PlayerController> ().Id);
 		}
 	}
 }

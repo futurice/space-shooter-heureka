@@ -228,7 +228,7 @@ public class PlayerController : Timeoutable
 				ScoreManager.Instance.addPoints (sourceId, GameConstants.POINTS_FOR_KILL);
 
 				Destroy (other.gameObject);
-				GameManager.Instance.destroyWithExplosion (this.gameObject);
+				GameManager.Instance.DestroyWithExplosion (this.gameObject, Id);
 			}
 		}
 		else if (other.tag == "spaceship")
@@ -239,26 +239,32 @@ public class PlayerController : Timeoutable
             bool thatEnlargend = otherPlayer.IsEnlargened;
             bool both = thisEnlargend && thatEnlargend;
             bool neither = !thisEnlargend && !thatEnlargend;
-            if (both || neither) {
-                GameManager.Instance.destroyWithExplosion(this.gameObject);
-                GameManager.Instance.destroyWithExplosion(other.gameObject, true, false);
+
+            if (both || neither)
+			{
+                GameManager.Instance.DestroyWithExplosion(this.gameObject);
+                GameManager.Instance.DestroyWithExplosion(other.gameObject, true, false);
             }
-            else if (thisEnlargend) {
-                GameManager.Instance.destroyWithExplosion(other.gameObject, true, true);
+            else if (thisEnlargend)
+			{
+                GameManager.Instance.DestroyWithExplosion(other.gameObject, true, true);
                 ScoreManager.Instance.addPoints(Id, GameConstants.POINTS_FOR_KILL);
             }
-            else if (thatEnlargend) {
-                GameManager.Instance.destroyWithExplosion(this.gameObject);
+            else if (thatEnlargend)
+			{
+                GameManager.Instance.DestroyWithExplosion(this.gameObject);
                 ScoreManager.Instance.addPoints(otherPlayer.Id, GameConstants.POINTS_FOR_KILL);
             }
-            else {
+            else
+			{
                 Debug.LogError("BUG IN PLAYERCONTROLLER");
                 Debug.Assert(true);
             }
         }
 	}
 
-	public bool hasInput() {
+	public bool HasInput ()
+	{
 		return _hasInput;
 	}
 }

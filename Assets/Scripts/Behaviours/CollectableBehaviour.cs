@@ -38,7 +38,7 @@ public class CollectableBehaviour : Timeoutable {
 			PlayerController ctrl = other.GetComponent<PlayerController>();
 			ctrl.addCollectable(_collectable);
 			Destroy(this.gameObject);
-			playSoundFx();
+			PlaySoundFX();
 		}
 		else if (other.tag == "planet") {
 			//destroy just so that it doesn't stay within the planet looking stupid.
@@ -47,12 +47,16 @@ public class CollectableBehaviour : Timeoutable {
 		}
 	}
 
-	void playSoundFx() {
-		switch (_collectable.Type) {
-		case Collectable.CollectableType.SpeedUp: AudioManager.Instance.playClip(AudioManager.AppAudioClip.AcquireSpeedup); 
-			break;
-		case Collectable.CollectableType.Weapon: AudioManager.Instance.playClip(AudioManager.AppAudioClip.AcquireWeapon); 
-			break;
+	private void PlaySoundFX ()
+	{
+		switch (_collectable.Type)
+		{
+			case Collectable.CollectableType.SpeedUp: AudioManager.Instance.playClip(AudioManager.AppAudioClip.AcquireSpeedup); 
+				break;
+			case Collectable.CollectableType.Weapon: AudioManager.Instance.playClip(AudioManager.AppAudioClip.AcquireWeapon); 
+				break;
+			case Collectable.CollectableType.Enlarge: AudioManager.Instance.playClip (AudioManager.AppAudioClip.AcquireEnlarge);
+				break;
 		}
 	}
 }

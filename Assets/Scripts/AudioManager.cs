@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using Crosstales.RTVoice.Model;
 using Crosstales.RTVoice;
 
-public class AudioManager : Singleton<AudioManager> {
-
+public class AudioManager : Singleton<AudioManager>
+{
     [SerializeField]
     private GameObject 	_audioSourcePrefab 		= null;
 
@@ -17,13 +17,14 @@ public class AudioManager : Singleton<AudioManager> {
 	[SerializeField]
 	private Voice 		_speakerVoice;
 
-
     private List<AudioSource> _currentlyPlaying = new List<AudioSource>();
 
-	public enum AppAudioClip {
+	public enum AppAudioClip
+	{
 		Explosion,
 		AcquireWeapon,
 		AcquireSpeedup,
+		AcquireEnlarge,
 		Shoot
 	}
 
@@ -40,18 +41,16 @@ public class AudioManager : Singleton<AudioManager> {
     private string ClipPath(AppAudioClip clip) {
 
         string path = null;
-        if (clip == AppAudioClip.Explosion) {
-			path = "Audio/explosion_player";
-        }
-		else if (clip == AppAudioClip.AcquireWeapon) {
-			path = "Audio/object_attached";
+
+		switch (clip)
+		{
+			case AppAudioClip.Explosion: 		return "Audio/explosion_player";
+			case AppAudioClip.AcquireWeapon: 	return "Audio/pick_up_1";
+			case AppAudioClip.AcquireSpeedup: 	return "Audio/pick_up_2";
+			case AppAudioClip.AcquireEnlarge: 	return "Audio/pick_up_3";
+			case AppAudioClip.Shoot: 			return "Audio/weapon_enemy";
 		}
-		else if (clip == AppAudioClip.AcquireSpeedup) {
-			path = "Audio/transition1";
-		}
-		else if (clip == AppAudioClip.Shoot) {
-			path = "Audio/weapon_enemy";
-		}
+
 		return path;
     }
 

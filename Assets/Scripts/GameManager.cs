@@ -114,7 +114,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	public void StopRound ()
 	{
 		//TODO modify state so players cannot re-create themselves
-		destroyAll ();
+		DestroyAll ();
 		_isGameActive = false;
 		AudioManager.Instance.speak("Time's up.");
 
@@ -252,13 +252,15 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	 * This singleton instance keeps the track who is spawned, when and where
 	 * */
 
-	public void destroyWithExplosion(GameObject obj) {
-		destroyWithExplosion(obj, true, true);
+	public void DestroyWithExplosion (GameObject obj, int playerId =-1)
+	{
+		DestroyWithExplosion(obj, true, true, playerId);
 	}
 
-	public void destroyWithExplosion(GameObject obj, bool scores, bool sounds) {
-		animateExplosion(obj.transform);
-		Destroy(obj);
+	public void DestroyWithExplosion (GameObject obj, bool scores, bool sounds, int playerId =-1)
+	{
+		AnimateExplosion (obj.transform.position, playerId);
+		Destroy (obj);
 
 		//TODO add tags to constants
 		if (obj.tag == "spaceship" ) {
@@ -276,36 +278,54 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 	}
 
-	private void destroyAll() {
-		foreach(PlayerState s in _playerShips.Values) {
+	private void DestroyAll ()
+	{
+		foreach(PlayerState s in _playerShips.Values)
+		{
 			GameObject obj = s._ship;
-			animateExplosion(obj.transform);
-			Destroy(obj);
+			AnimateExplosion (obj.transform.position);
+			Destroy (obj);
 		}
 		_playerShips.Clear();
 		AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
 	}
 
-	private void animateExplosion(Transform t) {
-		GameObject explosion = Instantiate(_explosionPrefab) as GameObject;
-		explosion.transform.position = t.position;
-		float duration = explosion.GetComponent<ParticleSystem>().duration;
-		Destroy(explosion, duration);
+	private void AnimateExplosion (Vector3 position, int playerId =-1)
+	{
+		GameObject explosion = null;
+
+		if (playerId == -1)
+		{
+			explosion = Instantiate (_explosionPrefab) as GameObject;
+		}
+		else
+		{
+			explosion = Instantiate (PlayerInformationManager.Instance.GetPlayerInformation (playerId).ExplosionPrefab) as GameObject;
+		}
+
+		explosion.transform.position = position;
+		float duration = explosion.GetComponent<ParticleSystem> ().duration;
+		Destroy (explosion, duration);
 	}
 
 
-	public void destroyAsteroid(GameObject obj) {
+	public void DestroyAsteroid (GameObject obj, int playerId = -1)
+	{
 		Debug.Log("destroy asteroid");
-		if (_asteroids.Remove(obj)) {
+
+		if (_asteroids.Remove(obj))
+		{
 			//create new to replace old one
 			Debug.Log("Creating a new asteroid to replace old");
 			createAsteroid();
 		}
-		else {
+		else
+		{
 			Debug.LogWarning("Destroying asteroid that's not on the list!");
 		}
+
 		AsteroidBehaviour behaviour = obj.GetComponent<AsteroidBehaviour>();
-		behaviour.destroyMe();
+		behaviour.DestroyMe (playerId);
 	}
 
 	private void createPlayer(int id) {
@@ -334,7 +354,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO refactor tags out, use method accesesor for this feature
 		if (t.tag == "spaceship") {
 			//Invoked by the Controllers after a timeout
-			destroyWithExplosion(t.gameObject, false, false);
+			DestroyWithExplosion(t.gameObject, false, false);
 		}
 		else {
 			Destroy(t.gameObject);
