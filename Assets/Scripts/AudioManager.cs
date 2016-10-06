@@ -7,11 +7,16 @@ using Crosstales.RTVoice;
 public class AudioManager : Singleton<AudioManager> {
 
     [SerializeField]
-    private GameObject _audioSourcePrefab = null;
+    private GameObject 	_audioSourcePrefab 		= null;
+
+	[Header("Text To Speech (TTS")]
 	[SerializeField]
-	private GameObject _audioSourceTTSPrefab = null;
+	private GameObject 	_audioSourceTTSPrefab 	= null;
 	[SerializeField]
-	private Voice _speakerVoice;
+	private Transform	_ttsContainer			= null;
+	[SerializeField]
+	private Voice 		_speakerVoice;
+
 
     private List<AudioSource> _currentlyPlaying = new List<AudioSource>();
 
@@ -103,6 +108,11 @@ public class AudioManager : Singleton<AudioManager> {
     }
 
 	public void speak(string speech) {
+
+		// Silence all existing speakers - we are polite no talking on top of
+		// our selves
+		silence ();
+
 		bool isNative = false;
 		float rate = 1.0f;
 		float vol = 1.0f;
@@ -113,13 +123,15 @@ public class AudioManager : Singleton<AudioManager> {
 		}
 		else
 		{
-			GameObject audioSource = Instantiate(_audioSourceTTSPrefab) as GameObject;
-			audioSource.transform.SetParent(this.transform);
-			
-			
+			// Create a new speaker
+			GameObject audioSource = Instantiate(_audioSourceTTSPrefab, _ttsContainer) as GameObject;
 			AudioSource source = audioSource.GetComponent<AudioSource>();
-
 			Speaker.Speak(speech, source, _speakerVoice, true, rate, vol, "", pitch);
 		}
+	}
+
+	public void silence() {
+		Speaker.Silence ();
+		_ttsContainer.DestroyChildren ();
 	}
 }

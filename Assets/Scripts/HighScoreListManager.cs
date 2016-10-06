@@ -12,7 +12,6 @@ public class HighScoreListManager : Singleton<HighScoreListManager>
 	public void ShowHighScores ()
 	{
 		DestroyHighScoreItems ();
-
 		List<KeyValuePair<int, int>> scores = ScoreManager.Instance.ScoresSorted;
 
 		foreach (KeyValuePair<int, int> score in scores)
@@ -33,9 +32,6 @@ public class HighScoreListManager : Singleton<HighScoreListManager>
 
 	private void DestroyHighScoreItems ()
 	{
-		foreach (Transform child in transform)
-		{
-			GameObject.Destroy (child.gameObject);
-		}
+		transform.DestroyChildren ();
 	}
 }
