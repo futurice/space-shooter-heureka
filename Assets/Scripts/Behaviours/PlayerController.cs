@@ -126,7 +126,7 @@ public class PlayerController : Timeoutable
 		_keys = keys;
 	}
 
-	public override float getTimeout() {
+	public override float GetTimeout() {
 		return GameConstants.PLAYER_IDLE_TIMEOUT;
 	}
 	
@@ -232,7 +232,7 @@ public class PlayerController : Timeoutable
 
 	private void OnPlayerShipTriggerEnter (Collider other)
 	{
-		if (other.tag == "projectile")
+		if (other.CompareTag ("projectile"))
 		{
 			ProjectileBehaviour projectile = other.gameObject.GetComponent<ProjectileBehaviour>();
 
@@ -246,7 +246,7 @@ public class PlayerController : Timeoutable
 				GameManager.Instance.DestroyWithExplosion (this.gameObject, Id);
 			}
 		}
-		else if (other.tag == "spaceship")
+		else if (other.CompareTag ("spaceship"))
 		{
 			SpaceShipController otherSpaceShip = other.gameObject.GetComponent<SpaceShipController> ();
 			PlayerController otherPlayer = otherSpaceShip.Player;

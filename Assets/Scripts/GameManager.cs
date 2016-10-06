@@ -259,23 +259,30 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	public void DestroyWithExplosion (GameObject obj, bool scores, bool sounds, int playerId =-1)
 	{
-		AnimateExplosion (obj.transform.position, playerId);
-		Destroy (obj);
-
 		//TODO add tags to constants
-		if (obj.tag == "spaceship" ) {
-			int id = obj.GetComponent<PlayerController>().Id;
-			if (_playerShips.Remove(id)) {
-				Debug.Log(string.Format("player {0} died.", id));
-				if (scores) {
-					ScoreManager.Instance.addPoints(id, GameConstants.POINTS_FOR_DYING);
+		if (obj.CompareTag ("spaceship"))
+		{
+			SpaceShipController spaceShip = obj.GetComponent<SpaceShipController> ();
+			int id = spaceShip.Player.Id;
+
+			if (_playerShips.Remove (id))
+			{
+				Debug.LogFormat ("GameManager DestroyWithExplosion: Player {0} died.", id);
+
+				if (scores)
+				{
+					ScoreManager.Instance.addPoints (id, GameConstants.POINTS_FOR_DYING);
 				}
-				if (sounds) {
-					InsultManager.Instance.playerDied(id);
-					AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
+				if (sounds)
+				{
+					InsultManager.Instance.playerDied (id);
+					AudioManager.Instance.playClip (AudioManager.AppAudioClip.Explosion);
 				}
 			}
 		}
+
+		AnimateExplosion (obj.transform.position, playerId);
+		Destroy (obj);
 	}
 
 	private void DestroyAll ()
@@ -351,13 +358,17 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		ctrl.addTimeoutListener(this);
 	}
 
-	public void timeoutElapsed(Timeoutable t) {
+	public void timeoutElapsed(Timeoutable t)
+	{
 		//TODO refactor tags out, use method accesesor for this feature
-		if (t.tag == "spaceship") {
+		if (t.CompareTag ("spaceship"))
+		{
 			//Invoked by the Controllers after a timeout
-			DestroyWithExplosion(t.gameObject, false, false);
+			SpaceShipController spaceShip = t.GetComponent<SpaceShipController> ();
+			DestroyWithExplosion(spaceShip.Player.gameObject, false, false);
 		}
-		else {
+		else
+		{
 			Destroy(t.gameObject);
 		}
 	}

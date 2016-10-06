@@ -14,7 +14,7 @@ public class AsteroidBehaviour : MonoBehaviour {
 
 	private void OnTriggerEnter (Collider other)
 	{
-		if (other.tag == "projectile")
+		if (other.CompareTag ("projectile"))
 		{
 			int sourceId = other.GetComponent<ProjectileBehaviour>().SourceId;
 			ScoreManager.Instance.addPoints (sourceId, GameConstants.POINTS_FOR_ASTEROID);
@@ -24,7 +24,7 @@ public class AsteroidBehaviour : MonoBehaviour {
 		else
 		{
             //some refactoring would be in place..
-            if (other.tag == "spaceship")
+			if (other.CompareTag ("spaceship"))
 			{
 				SpaceShipController spaceShip = other.GetComponent<SpaceShipController> ();
 				PlayerController playerController = spaceShip.Player;
@@ -37,13 +37,13 @@ public class AsteroidBehaviour : MonoBehaviour {
 				}
 				else
 				{
-					GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
+					GetComponent<Rigidbody> ().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
 				}
             }
             else
 			{
                 //give it a little spin
-                GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
+                GetComponent<Rigidbody> ().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
             }
 			
         }
