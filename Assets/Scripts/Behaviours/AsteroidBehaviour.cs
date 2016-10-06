@@ -24,13 +24,24 @@ public class AsteroidBehaviour : MonoBehaviour {
 		else
 		{
             //some refactoring would be in place..
-            if (other.tag == "spaceship" && other.gameObject.GetComponent<PlayerController>().IsEnlargened)
+            if (other.tag == "spaceship")
 			{
-                int sourceId = other.gameObject.GetComponent<PlayerController>().Id;
-                ScoreManager.Instance.addPoints (sourceId, GameConstants.POINTS_FOR_ASTEROID);
-                GameManager.Instance.DestroyAsteroid (this.gameObject);
+				SpaceShipController spaceShip = other.GetComponent<SpaceShipController> ();
+				PlayerController playerController = spaceShip.Player;
+
+				if (playerController.IsEnlargened)
+				{
+	                int sourceId = playerController.Id;
+	                ScoreManager.Instance.addPoints (sourceId, GameConstants.POINTS_FOR_ASTEROID);
+	                GameManager.Instance.DestroyAsteroid (this.gameObject);
+				}
+				else
+				{
+					GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
+				}
             }
-            else {
+            else
+			{
                 //give it a little spin
                 GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
             }

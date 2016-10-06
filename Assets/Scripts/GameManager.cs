@@ -96,7 +96,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO enumerate min and max
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++)
 		{
-			createPlayer(id);
+			CreatePlayer(id);
 		}
 
 		initCollectableTimeout();
@@ -158,7 +158,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 				if (pressed)
 				{
 					Debug.LogFormat ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id);
-					createPlayer(id);
+					CreatePlayer(id);
 				}
 
 			}
@@ -328,7 +328,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		behaviour.DestroyMe (playerId);
 	}
 
-	private void createPlayer(int id) {
+	private void CreatePlayer (int id)
+	{
 		int index =  id % _spaceShipPrefabs.Count;
 		GameObject prefab = _spaceShipPrefabs[index];
 		GameObject ship = Instantiate (prefab, _playerContainer) as GameObject;
@@ -340,7 +341,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		ctrl.Init (id, keys, PlayerInformationManager.Instance.GetPlayerInformation (id));
 		ScoreManager.Instance.addPoints (id, 0);
 
-		ship.GetComponent<WeaponLauncher>().setFireKeyCode(keys.FireBtn);
+		ship.GetComponent<WeaponLauncher>().setFireKeyCode (keys.FireBtn);
 
 		//set initial position to unique place around the home planet
 		Vector3 directionOnUnitCircle = GameConstants.getPlayerStartDirection(id);

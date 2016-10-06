@@ -28,7 +28,10 @@ public class PlanetBehaviour : MonoBehaviour
 		}
 		else if (other.tag == "spaceship")
 		{
-			GameManager.Instance.DestroyWithExplosion (other.gameObject, other.gameObject.GetComponent<PlayerController> ().Id);
+			SpaceShipController spaceShip = other.GetComponent<SpaceShipController> ();
+			PlayerController playerController = spaceShip.Player;
+
+			GameManager.Instance.DestroyWithExplosion (playerController.gameObject, playerController.Id);
 		}
 	}
 }

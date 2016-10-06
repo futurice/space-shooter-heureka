@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UniRx;
+using UniRx.Triggers;
 
 public class PlayerController : Timeoutable
 {
@@ -14,11 +16,14 @@ public class PlayerController : Timeoutable
 	[SerializeField]
 	private PlayerColorIndicator		_colorIndicator;
 	[SerializeField]
+	private Transform					_shipContainer;
+	[SerializeField]
 	private Text						_scoreText;
 
-	private GameConstants.PlayerKeys 	_keys = new GameConstants.PlayerKeys(0);
-    private List<Collectable> 			_collectables = new List<Collectable>();//TODO add timestamp, so we can 
+	private GameConstants.PlayerKeys 	_keys = new GameConstants.PlayerKeys (0);
+    private List<Collectable> 			_collectables = new List<Collectable> ();//TODO add timestamp, so we can 
 	private bool 						_hasInput = false;
+	private GameObject					_playerShip;
 
 	private int	_id = 0;
 
@@ -93,9 +98,9 @@ public class PlayerController : Timeoutable
 	{
 		get
 		{
-			if (_shipCollider == null)
+			if (_shipCollider == null && _playerShip != null)
 			{
-				_shipCollider = GetComponent<Collider> ();
+				_shipCollider = _playerShip.GetComponent<Collider> ();
 			}
 
 			return _shipCollider;
@@ -107,6 +112,13 @@ public class PlayerController : Timeoutable
 		this.Id = id;
 		SetPlayerKeys (keys);
 		this.PlayerInformation = playerInformation;
+
+		_playerShip = Instantiate (playerInformation.PlayerShipPrefab, _shipContainer, false) as GameObject;
+		_playerShip.GetComponent<SpaceShipController> ().Init (this);
+
+		_playerShip.OnTriggerEnterAsObservable ().Subscribe (collider => {
+			OnPlayerShipTriggerEnter (collider);
+		});
 	}
 
 	private void SetPlayerKeys (GameConstants.PlayerKeys keys)
@@ -173,7 +185,7 @@ public class PlayerController : Timeoutable
 
 		Rigidbody rb = Rigidbody;
 
-		float speedFactor = getSpeedFactor();
+		float speedFactor = GetSpeedFactor();
 		float rotationSpeed = speedFactor * _rotationSpeed; 
 		float currentSpeed = speedFactor * _speed;
 
@@ -207,15 +219,18 @@ public class PlayerController : Timeoutable
 
 	public float thrust = 3.0f;
 
-	private float getSpeedFactor() {
+	private float GetSpeedFactor ()
+	{
 		float speed = 1.0f;
-		foreach (Collectable c in _collectables) {
+
+		foreach (Collectable c in _collectables)
+		{
 			speed *= c.SpeedUpFactor;
 		}
 		return speed;
 	}
 
-	private void OnTriggerEnter(Collider other)
+	private void OnPlayerShipTriggerEnter (Collider other)
 	{
 		if (other.tag == "projectile")
 		{
@@ -233,7 +248,8 @@ public class PlayerController : Timeoutable
 		}
 		else if (other.tag == "spaceship")
 		{
-            PlayerController otherPlayer = other.gameObject.GetComponent<PlayerController>();
+			SpaceShipController otherSpaceShip = other.gameObject.GetComponent<SpaceShipController> ();
+			PlayerController otherPlayer = otherSpaceShip.Player;
 
             bool thisEnlargend = IsEnlargened;
             bool thatEnlargend = otherPlayer.IsEnlargened;
@@ -242,22 +258,22 @@ public class PlayerController : Timeoutable
 
             if (both || neither)
 			{
-                GameManager.Instance.DestroyWithExplosion(this.gameObject);
-                GameManager.Instance.DestroyWithExplosion(other.gameObject, true, false);
+                GameManager.Instance.DestroyWithExplosion (this.gameObject);
+				GameManager.Instance.DestroyWithExplosion (otherPlayer.gameObject, true, false);
             }
             else if (thisEnlargend)
 			{
-                GameManager.Instance.DestroyWithExplosion(other.gameObject, true, true);
-                ScoreManager.Instance.addPoints(Id, GameConstants.POINTS_FOR_KILL);
+				GameManager.Instance.DestroyWithExplosion (otherPlayer.gameObject, true, true);
+                ScoreManager.Instance.addPoints (Id, GameConstants.POINTS_FOR_KILL);
             }
             else if (thatEnlargend)
 			{
-                GameManager.Instance.DestroyWithExplosion(this.gameObject);
-                ScoreManager.Instance.addPoints(otherPlayer.Id, GameConstants.POINTS_FOR_KILL);
+                GameManager.Instance.DestroyWithExplosion (this.gameObject);
+                ScoreManager.Instance.addPoints (otherPlayer.Id, GameConstants.POINTS_FOR_KILL);
             }
             else
 			{
-                Debug.LogError("BUG IN PLAYERCONTROLLER");
+                Debug.LogError ("BUG IN PLAYERCONTROLLER");
                 Debug.Assert(true);
             }
         }
