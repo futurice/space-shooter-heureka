@@ -124,9 +124,9 @@ public class AudioManager : Singleton<AudioManager> {
 		else
 		{
 			// Create a new speaker
-			GameObject audioSource = Instantiate(_audioSourceTTSPrefab, _ttsContainer) as GameObject;
-			AudioSource source = audioSource.GetComponent<AudioSource>();
-			Speaker.Speak(speech, source, _speakerVoice, true, rate, vol, "", pitch);
+			GameObject audioSource = Instantiate (_audioSourceTTSPrefab, _ttsContainer) as GameObject;
+			AudioSource source = audioSource.GetComponent<AudioSource> ();
+			Speaker.Speak (speech, source, _speakerVoice, true, rate, vol, "", pitch);
 		}
 	}
 

@@ -5,15 +5,15 @@ using System.Collections.Generic;
 public class PlayerController : Timeoutable {
 
 	[SerializeField]
-	private float 		_speed = 10.0f;
+	private float 					_speed = 10.0f;
 	[SerializeField]
-	private float 		_rotationSpeed = 5.0f;
+	private float 					_rotationSpeed = 5.0f;
 	[SerializeField]
-	private Transform 	_transformLimits;
+	private Transform 				_transformLimits;
 	[SerializeField]
-	private SpriteRenderer	_colorIndicator;
+	private PlayerColorIndicator	_colorIndicator;
 
-    private List<Collectable> _collectables = new List<Collectable>();//TODO add timestamp, so we can 
+    private List<Collectable> 		_collectables = new List<Collectable>();//TODO add timestamp, so we can 
 
 	private bool _hasInput = false;
 
@@ -34,10 +34,7 @@ public class PlayerController : Timeoutable {
 
 			if (_colorIndicator != null)
 			{
-				// Set the color indicator to match
-				Color colorIndicatorColor = value.Color;
-				colorIndicatorColor.a = 0.3f;
-				_colorIndicator.color = colorIndicatorColor;
+				_colorIndicator.Color = value.Color;
 			}
 		}
 	}
