@@ -22,14 +22,7 @@ public class HighScoreItemView : MonoBehaviour
 		_playerNameText.text = playerInformation.Name;
 
 		// Set the player score
-		if (score < 0)
-		{
-			_playerScoreText.text = string.Format ("{0} PTS", score);
-		}
-		else
-		{
-			_playerScoreText.text = string.Format ("+{0} PTS", score);
-		}
+		_playerScoreText.text = string.Format ("{0}{1} PTS", score < 0 ? string.Empty : "+");
 
 		// Apply colors to the texts and the sprite
 		_playerShipSilhouetteImage.color = playerInformation.Color;
