@@ -19,13 +19,13 @@ public class OrbitManager : Singleton<OrbitManager>
 	}
 
 	// Returns a random orbit from the orbits
-	public Vector3[] GetOrbit ()
+	public Orbit GetOrbit ()
 	{
 		int numOrbits = Orbits.Length;
 
 		if (numOrbits > 0)
 		{
-			return Orbits[UnityEngine.Random.Range (0, numOrbits)].OrbitPath;
+			return Orbits[UnityEngine.Random.Range (0, numOrbits)].Orbit;
 		}
 
 		return null;

@@ -3,24 +3,28 @@ using System.Collections;
 
 public class OrbitController : MonoBehaviour
 {
-	private Vector3[] _orbitPath;
+	[SerializeField]
+	private float 		_duration = 10.0f;
+	private Orbit 		_orbit;
 
-	public Vector3[] OrbitPath
+	public Orbit Orbit
 	{
 		get
 		{
-			if (_orbitPath == null)
+			if (_orbit == null)
 			{
-				_orbitPath = new Vector3[transform.childCount];
+				Vector3[] orbitPath = new Vector3[transform.childCount];
 				int i = 0;
 
 				foreach (Transform child in transform)
 				{
-					_orbitPath[i++] = child.position;
+					orbitPath[i++] = child.position;
 				}
+
+				_orbit = new Orbit (orbitPath, _duration);
 			}
 
-			return _orbitPath;
+			return _orbit;
 		}
 	}
 }

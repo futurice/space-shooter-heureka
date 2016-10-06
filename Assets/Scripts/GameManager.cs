@@ -25,8 +25,6 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	[SerializeField]
 	private float _orbitItemSpawnAttempInterval = 20.0f;
 	[SerializeField]
-	private float _orbitDuration = 10.0f;
-	[SerializeField]
 	private GameObject[] _orbitItems;
 	[SerializeField]
 	private Transform _orbitItemContainer;
@@ -206,10 +204,10 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 					Debug.LogFormat ("GameManager Update: Spawning orbit item: {0}", index);
 
 					GameObject orbitItem = Instantiate (_orbitItems[index], _orbitItemContainer) as GameObject;
-					Vector3[] orbit = OrbitManager.Instance.GetOrbit ();
-					orbitItem.transform.position = orbit[0];
+					Orbit orbit = OrbitManager.Instance.GetOrbit ();
+					orbitItem.transform.position = orbit.Path[0];
 
-					orbitItem.transform.DOPath (orbit, _orbitDuration, PathType.CatmullRom, PathMode.TopDown2D)
+					orbitItem.transform.DOPath (orbit.Path, orbit.Duration, PathType.CatmullRom, PathMode.TopDown2D)
 						.SetEase (Ease.Linear)
 						.OnComplete (() => {
 							if (orbitItem != null)
