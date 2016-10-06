@@ -28,22 +28,27 @@ public class CollectableBehaviour : Timeoutable {
 		}
 	}
 
-	public override float getTimeout() {
+	public override float GetTimeout ()
+	{
 		return GameConstants.COLLECTABLE_TIMEOUT;
 	}
 
-	void OnTriggerEnter(Collider other) {
-		if (other.tag == "spaceship") {
+	private void OnTriggerEnter (Collider other)
+	{
+		if (other.CompareTag ("spaceship"))
+		{
 			//This code could also be in PlayerController.. refactor if needed
-			PlayerController ctrl = other.GetComponent<PlayerController>();
-			ctrl.addCollectable(_collectable);
-			Destroy(this.gameObject);
-			PlaySoundFX();
+			SpaceShipController spaceShip = other.GetComponent<SpaceShipController> ();
+			PlayerController playerController = spaceShip.Player;
+			playerController.addCollectable (_collectable);
+			Destroy (this.gameObject);
+			PlaySoundFX ();
 		}
-		else if (other.tag == "planet") {
+		else if (other.CompareTag ("planet"))
+		{
 			//destroy just so that it doesn't stay within the planet looking stupid.
 			//spawning these should however check that this doesn't happen, but leave this just in case
-			Destroy(this.gameObject);
+			Destroy (this.gameObject);
 		}
 	}
 

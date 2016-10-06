@@ -22,14 +22,14 @@ public class Timeoutable : MonoBehaviour {
 			_lifetimeInSecs += Time.deltaTime;
 		}
 
-		if (_lifetimeInSecs >= getTimeout()) {
+		if (_lifetimeInSecs >= GetTimeout()) {
 			foreach(TimeoutListener l in _listeners) {
 				l.timeoutElapsed(this);
 			}
 		}
 	}
 
-	public virtual float getTimeout() {
+	public virtual float GetTimeout() {
 		return 10.0f;
 	}
 

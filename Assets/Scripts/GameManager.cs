@@ -96,7 +96,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO enumerate min and max
 		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++)
 		{
-			createPlayer(id);
+			CreatePlayer(id);
 		}
 
 		initCollectableTimeout();
@@ -158,7 +158,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 				if (pressed)
 				{
 					Debug.LogFormat ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id);
-					createPlayer(id);
+					CreatePlayer(id);
 				}
 
 			}
@@ -259,23 +259,30 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	public void DestroyWithExplosion (GameObject obj, bool scores, bool sounds, int playerId =-1)
 	{
-		AnimateExplosion (obj.transform.position, playerId);
-		Destroy (obj);
-
 		//TODO add tags to constants
-		if (obj.tag == "spaceship" ) {
-			int id = obj.GetComponent<PlayerController>().Id;
-			if (_playerShips.Remove(id)) {
-				Debug.Log(string.Format("player {0} died.", id));
-				if (scores) {
-					ScoreManager.Instance.addPoints(id, GameConstants.POINTS_FOR_DYING);
+		if (obj.CompareTag ("Player"))
+		{
+			PlayerController playerController = obj.GetComponent<PlayerController> ();
+			int id = playerController.Id;
+
+			if (_playerShips.Remove (id))
+			{
+				Debug.LogFormat ("GameManager DestroyWithExplosion: Player {0} died.", id);
+
+				if (scores)
+				{
+					ScoreManager.Instance.addPoints (id, GameConstants.POINTS_FOR_DYING);
 				}
-				if (sounds) {
-					InsultManager.Instance.playerDied(id);
-					AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
+				if (sounds)
+				{
+					InsultManager.Instance.playerDied (id);
+					AudioManager.Instance.playClip (AudioManager.AppAudioClip.Explosion);
 				}
 			}
 		}
+
+		AnimateExplosion (obj.transform.position, playerId);
+		Destroy (obj);
 	}
 
 	private void DestroyAll ()
@@ -328,7 +335,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		behaviour.DestroyMe (playerId);
 	}
 
-	private void createPlayer(int id) {
+	private void CreatePlayer (int id)
+	{
 		int index =  id % _spaceShipPrefabs.Count;
 		GameObject prefab = _spaceShipPrefabs[index];
 		GameObject ship = Instantiate (prefab, _playerContainer) as GameObject;
@@ -340,7 +348,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		ctrl.Init (id, keys, PlayerInformationManager.Instance.GetPlayerInformation (id));
 		ScoreManager.Instance.addPoints (id, 0);
 
-		ship.GetComponent<WeaponLauncher>().setFireKeyCode(keys.FireBtn);
+		ship.GetComponent<WeaponLauncher>().setFireKeyCode (keys.FireBtn);
 
 		//set initial position to unique place around the home planet
 		Vector3 directionOnUnitCircle = GameConstants.getPlayerStartDirection(id);
@@ -350,13 +358,17 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		ctrl.addTimeoutListener(this);
 	}
 
-	public void timeoutElapsed(Timeoutable t) {
+	public void timeoutElapsed(Timeoutable t)
+	{
 		//TODO refactor tags out, use method accesesor for this feature
-		if (t.tag == "spaceship") {
+		if (t.CompareTag ("spaceship"))
+		{
 			//Invoked by the Controllers after a timeout
-			DestroyWithExplosion(t.gameObject, false, false);
+			SpaceShipController spaceShip = t.GetComponent<SpaceShipController> ();
+			DestroyWithExplosion(spaceShip.Player.gameObject, false, false);
 		}
-		else {
+		else
+		{
 			Destroy(t.gameObject);
 		}
 	}
