@@ -297,7 +297,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
 	}
 
-	private void AnimateExplosion (Vector3 position, int playerId =-1)
+    public void AnimateExplosion (Vector3 position, int playerId =-1, float scaleFactor = -1.0f)
 	{
 		GameObject explosion = null;
 
@@ -311,6 +311,10 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 
 		explosion.transform.position = position;
+        if (scaleFactor > 0.0f) {
+            explosion.transform.localScale *= scaleFactor;
+        }
+
 		float duration = explosion.GetComponent<ParticleSystem> ().duration;
 		Destroy (explosion, duration);
 	}
