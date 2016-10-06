@@ -1,12 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	[SerializeField]
 	private GameObject _explosionPrefab;
 	[SerializeField]
 	private Transform _gameArea;
+
+	[Header("Game play")]
+	[SerializeField]
+	private GameObject _timeDisplay;
+	[SerializeField]
+	private Text _timeText;
 
 	[Header("Planets")]
 	[SerializeField]
@@ -33,13 +40,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private Transform _asteroidContainer;
 
 	private List<GameObject> _asteroids = new List<GameObject>();
-
 	private float _secsUntilNextCollectable = 0.0f;
 	private bool _warningGiven = false;
-
 	private Dictionary<int, PlayerState> _playerShips = new Dictionary<int, PlayerState>();
-
 	private bool _isGameActive = false;
+
+	// Game time related
+	private float _gameStartedTime;
+	private float _gameEndTime;
 
   	private class PlayerState
 	{
@@ -54,7 +62,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 	}
 
-	void Start() {
+	private void Start ()
+	{
 		string[] joysticks = Input.GetJoystickNames();
 		foreach (string j in joysticks) {
 			Debug.Log("Found joystick " + j);
@@ -66,9 +75,11 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	}
 
-	public void startNewRound () {
+	public void StartNewRound (float roundLength)
+	{
 		//TODO enumerate min and max
-		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
+		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++)
+		{
 			createPlayer(id);
 		}
 
@@ -76,13 +87,26 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		_warningGiven = false;
 		_isGameActive = true;
 		AudioManager.Instance.speak("Board your ships.");
+
+		// Show the time display
+		_gameStartedTime = Time.time;
+		_gameEndTime = Time.time + roundLength;
+		_timeDisplay.SetActive (true);
+		_timeText.text = string.Empty;
 	}
 
-	public void stopRound() {
+	public void StopRound ()
+	{
 		//TODO modify state so players cannot re-create themselves
-		destroyAll();
+		destroyAll ();
 		_isGameActive = false;
 		AudioManager.Instance.speak("Time's up.");
+
+		// Hide the time display
+		_gameStartedTime = -1.0f;
+		_gameEndTime = -1.0f;
+		_timeDisplay.SetActive (false);
+		_timeText.text = string.Empty;
 	}
 
 	private void initCollectableTimeout() {
@@ -97,19 +121,24 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		_secsUntilNextCollectable = Mathf.Clamp(timeout * Random.value, 1.0f, timeout);
 	}
 
-	void Update() {
-		if (!_isGameActive) {
+	private void Update ()
+	{
+		if (!_isGameActive)
+		{
 			return;
 		}
 
 		//TODO remove direct button listening from this class... abstract it somewhere and just get events, etc
-		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++) {
-			if (!_playerShips.ContainsKey(id)) {
+		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++)
+		{
+			if (!_playerShips.ContainsKey(id))
+			{
 				GameConstants.PlayerKeys keys = GameConstants.getPlayerKeys(id);
 				bool pressed = Input.GetButtonDown(keys.SpawnBtn);
-				if (pressed) {
-					Debug.Log(string.Format ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id));
 
+				if (pressed)
+				{
+					Debug.Log(string.Format ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id));
 					createPlayer(id);
 				}
 
@@ -117,19 +146,27 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 
 		_secsUntilNextCollectable -= Time.deltaTime;
-		if (_secsUntilNextCollectable <= 0.0f) {
+
+		if (_secsUntilNextCollectable <= 0.0f)
+		{
 			//These should also be cleaned up.. Add logic to CollectableBehaviour or here
 			createCollectable();
 			initCollectableTimeout();
 		}
 
-		if (!_warningGiven) {
+		if (!_warningGiven)
+		{
 			float secsLeft = 30.0f;
-			if (SessionManager.Instance.gameSessionLeft() < secsLeft) {
+			if (SessionManager.Instance.gameSessionLeft() < secsLeft)
+			{
+				Vector3[] orbitPath = OrbitManager.Instance.GetOrbit ();
 				AudioManager.Instance.speak("You have thirty seconds");
 				_warningGiven = true;
 			}
 		}
+
+		// Update the time view text
+		_timeText.text = string.Format ("{0} SEC", (int)(_gameEndTime-Time.time));
 	}
 
 	public float gravityForce = 100.0f;
