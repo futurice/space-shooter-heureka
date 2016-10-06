@@ -260,10 +260,10 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	public void DestroyWithExplosion (GameObject obj, bool scores, bool sounds, int playerId =-1)
 	{
 		//TODO add tags to constants
-		if (obj.CompareTag ("spaceship"))
+		if (obj.CompareTag ("Player"))
 		{
-			SpaceShipController spaceShip = obj.GetComponent<SpaceShipController> ();
-			int id = spaceShip.Player.Id;
+			PlayerController playerController = obj.GetComponent<PlayerController> ();
+			int id = playerController.Id;
 
 			if (_playerShips.Remove (id))
 			{
