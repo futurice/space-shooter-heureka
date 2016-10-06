@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class PlayerController : Timeoutable
 {
@@ -12,6 +13,8 @@ public class PlayerController : Timeoutable
 	private Transform 					_transformLimits;
 	[SerializeField]
 	private PlayerColorIndicator		_colorIndicator;
+	[SerializeField]
+	private Text						_scoreText;
 
 	private GameConstants.PlayerKeys 	_keys = new GameConstants.PlayerKeys(0);
     private List<Collectable> 			_collectables = new List<Collectable>();//TODO add timestamp, so we can 
@@ -41,13 +44,20 @@ public class PlayerController : Timeoutable
 			return _playerInformation;
 		}
 
-		set
+		private set
 		{ 
 			_playerInformation = value;
 
+			// Set color indicator color
 			if (_colorIndicator != null)
 			{
 				_colorIndicator.Color = value.Color;
+			}
+
+			// Set score text color
+			if (_scoreText != null)
+			{
+				_scoreText.color = new Color (value.Color.r, value.Color.g, value.Color.b, 0.5f);
 			}
 		}
 	}
@@ -92,13 +102,16 @@ public class PlayerController : Timeoutable
 		}
 	}
 
-
-	public void setPlayerKeys(GameConstants.PlayerKeys keys) {
-		_keys = keys;
+	public void Init (int id, GameConstants.PlayerKeys keys, PlayerInformation playerInformation)
+	{
+		this.Id = id;
+		SetPlayerKeys (keys);
+		this.PlayerInformation = playerInformation;
 	}
 
-	public override void Update() {
-		base.Update();
+	private void SetPlayerKeys (GameConstants.PlayerKeys keys)
+	{
+		_keys = keys;
 	}
 
 	public override float getTimeout() {
@@ -139,7 +152,17 @@ public class PlayerController : Timeoutable
         }
     }
 
-	void FixedUpdate() {
+	public override void Update()
+	{
+		base.Update();
+
+		// Update the score text
+		int points = ScoreManager.Instance.GetPointsForPlayer (Id);
+		_scoreText.text = string.Format ("{0}{1} PTS", points > 0 ? "+" : string.Empty, points);
+	}
+
+	private void FixedUpdate () 
+	{
 		float horizontal = Input.GetAxis(_keys.HorizontalAxis);
 		float vertical = Input.GetAxis(_keys.VerticalAxis);
 		_hasInput = horizontal > 0.00001f || vertical > 0.000001f;

@@ -24,11 +24,11 @@ public class HighScoreItemView : MonoBehaviour
 		// Set the player score
 		if (score < 0)
 		{
-			_playerScoreText.text = string.Format ("{0}", score);
+			_playerScoreText.text = string.Format ("{0} PTS", score);
 		}
 		else
 		{
-			_playerScoreText.text = string.Format ("+{0}", score);
+			_playerScoreText.text = string.Format ("+{0} PTS", score);
 		}
 
 		// Apply colors to the texts and the sprite

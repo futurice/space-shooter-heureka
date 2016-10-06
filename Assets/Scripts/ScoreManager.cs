@@ -11,8 +11,13 @@ public class ScoreManager : Singleton<ScoreManager> {
 	}
 
 	Dictionary<int, int> _scores = new Dictionary<int, int>();
-	public Dictionary<int, int> Scores {
-		get { return new Dictionary<int, int>(_scores); }
+
+	public Dictionary<int, int> Scores
+	{
+		get
+		{
+			return new Dictionary<int, int> (_scores);
+		}
 	}
 
 	private int _highScoreOfToday = 0;//TODO init at startup from file
@@ -54,6 +59,18 @@ public class ScoreManager : Singleton<ScoreManager> {
 				}
 			}
 		}
+	}
+
+	public int GetPointsForPlayer (int playerId)
+	{
+		int points = 0;
+
+		if (_scores.TryGetValue (playerId, out points))
+		{
+			return points;
+		}
+
+		return 0;
 	}
 
 	public void addPoints(int playerId, int points) {

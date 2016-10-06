@@ -317,9 +317,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//init game controller keys. See "Project Settings > Input" where the id mapping is
 		GameConstants.PlayerKeys keys = GameConstants.getPlayerKeys(id);
 		PlayerController ctrl = ship.GetComponent<PlayerController>();
-		ctrl.setPlayerKeys(keys);
-		ctrl.Id = id;
-		ctrl.PlayerInformation = PlayerInformationManager.Instance.GetPlayerInformation (id);
+		ctrl.Init (id, keys, PlayerInformationManager.Instance.GetPlayerInformation (id));
 		ScoreManager.Instance.addPoints (id, 0);
 
 		ship.GetComponent<WeaponLauncher>().setFireKeyCode(keys.FireBtn);
