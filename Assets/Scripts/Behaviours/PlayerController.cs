@@ -2,31 +2,44 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerController : Timeoutable {
-
+public class PlayerController : Timeoutable
+{
 	[SerializeField]
-	private float 					_speed = 10.0f;
+	private float 						_speed = 10.0f;
 	[SerializeField]
-	private float 					_rotationSpeed = 5.0f;
+	private float 						_rotationSpeed = 5.0f;
 	[SerializeField]
-	private Transform 				_transformLimits;
+	private Transform 					_transformLimits;
 	[SerializeField]
-	private PlayerColorIndicator	_colorIndicator;
+	private PlayerColorIndicator		_colorIndicator;
 
-    private List<Collectable> 		_collectables = new List<Collectable>();//TODO add timestamp, so we can 
+	private GameConstants.PlayerKeys 	_keys = new GameConstants.PlayerKeys(0);
+    private List<Collectable> 			_collectables = new List<Collectable>();//TODO add timestamp, so we can 
+	private bool 						_hasInput = false;
 
-	private bool _hasInput = false;
+	private int	_id = 0;
 
-	private int _id = 0;
-	public int Id {
-		set {_id = value; }
-		get { return _id; }
+	public int Id
+	{
+		set
+		{
+			_id = value;
+		}
+
+		get
+		{
+			return _id;
+		}
 	}
 
 	private PlayerInformation _playerInformation;
+
 	public PlayerInformation PlayerInformation
 	{
-		get { return _playerInformation; 	}
+		get
+		{
+			return _playerInformation;
+		}
 
 		set
 		{ 
@@ -40,8 +53,13 @@ public class PlayerController : Timeoutable {
 	}
 
     private bool _isEnlargened = false;
-    public bool IsEnlargened {
-        get { return _isEnlargened; }
+
+    public bool IsEnlargened
+	{
+        get
+		{
+			return _isEnlargened;
+		}
     }
 
 	private Rigidbody _rigidbody;
@@ -74,7 +92,6 @@ public class PlayerController : Timeoutable {
 		}
 	}
 
-	private GameConstants.PlayerKeys _keys = new GameConstants.PlayerKeys(0);
 
 	public void setPlayerKeys(GameConstants.PlayerKeys keys) {
 		_keys = keys;
@@ -171,18 +188,24 @@ public class PlayerController : Timeoutable {
 		return speed;
 	}
 
-	void OnTriggerEnter(Collider other) {
-		if (other.tag == "projectile") {
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.tag == "projectile")
+		{
 			ProjectileBehaviour projectile = other.gameObject.GetComponent<ProjectileBehaviour>();
-			if (projectile.Source != this.gameObject) {
-				int sourceId = projectile.SourceId;
-				ScoreManager.Instance.addPoints(sourceId, GameConstants.POINTS_FOR_KILL);
 
-				Destroy(other.gameObject);
-				GameManager.Instance.destroyWithExplosion(this.gameObject);
+			// If the projectile was from another player - destroy our ship
+			if (projectile.SourceId != Id)
+			{
+				int sourceId = projectile.SourceId;
+				ScoreManager.Instance.addPoints (sourceId, GameConstants.POINTS_FOR_KILL);
+
+				Destroy (other.gameObject);
+				GameManager.Instance.destroyWithExplosion (this.gameObject);
 			}
 		}
-		else if (other.tag == "spaceship") {
+		else if (other.tag == "spaceship")
+		{
             PlayerController otherPlayer = other.gameObject.GetComponent<PlayerController>();
 
             bool thisEnlargend = IsEnlargened;
