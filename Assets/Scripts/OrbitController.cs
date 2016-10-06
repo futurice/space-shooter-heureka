@@ -9,10 +9,9 @@ public class OrbitController : MonoBehaviour
 	{
 		get
 		{
-			_orbitPath = new Vector3[transform.childCount];
-
 			if (_orbitPath == null)
 			{
+				_orbitPath = new Vector3[transform.childCount];
 				int i = 0;
 
 				foreach (Transform child in transform)

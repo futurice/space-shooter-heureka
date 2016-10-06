@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	[SerializeField]
@@ -14,6 +15,23 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private GameObject _timeDisplay;
 	[SerializeField]
 	private Text _timeText;
+	[SerializeField]
+	private float gravityForce = 100.0f;
+
+	[Header("Orbit items")]
+	[SerializeField]
+	[Range(0.0f, 1.0f)]
+	private float _orbitItemSpawnChance = 0.5f;
+	[SerializeField]
+	private float _orbitItemSpawnAttempInterval = 20.0f;
+	[SerializeField]
+	private float _orbitDuration = 10.0f;
+	[SerializeField]
+	private GameObject[] _orbitItems;
+	[SerializeField]
+	private Transform _orbitItemContainer;
+
+	private float _lastOrbitItemSpawnAttempTime;
 
 	[Header("Planets")]
 	[SerializeField]
@@ -109,10 +127,13 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		_timeText.text = string.Empty;
 	}
 
-	private void initCollectableTimeout() {
+	private void initCollectableTimeout()
+	{
 		//Rate is loosely controlled by the number of active ships
 		float timeout = 10.0f;
-		if (_playerShips.Count < 4) {
+
+		if (_playerShips.Count < 4)
+		{
 			timeout = 10.0f;
 		}
 		else {
@@ -138,7 +159,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 				if (pressed)
 				{
-					Debug.Log(string.Format ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id));
+					Debug.LogFormat ("Spawnbutton {0} pressed for ship ID {1}", keys.SpawnBtn, id);
 					createPlayer(id);
 				}
 
@@ -159,7 +180,6 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			float secsLeft = 30.0f;
 			if (SessionManager.Instance.gameSessionLeft() < secsLeft)
 			{
-				Vector3[] orbitPath = OrbitManager.Instance.GetOrbit ();
 				AudioManager.Instance.speak("You have thirty seconds");
 				_warningGiven = true;
 			}
@@ -167,11 +187,44 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 		// Update the time view text
 		_timeText.text = string.Format ("{0} SEC", (int)(_gameEndTime-Time.time));
+
+		// Attempt to spawn orbit items at regular intervals
+		UpdateOrbitItems ();
 	}
 
-	public float gravityForce = 100.0f;
+	private void UpdateOrbitItems ()
+	{
+		if (Time.time - _lastOrbitItemSpawnAttempTime > _orbitItemSpawnAttempInterval)
+		{
+			if (Random.value > 1.0f - _orbitItemSpawnChance)
+			{
+				int numOrbitItems = _orbitItems.Length;
 
-	void FixedUpdate ()
+				if (numOrbitItems > 0)
+				{
+					int index = Random.Range (0, numOrbitItems);
+					Debug.LogFormat ("GameManager Update: Spawning orbit item: {0}", index);
+
+					GameObject orbitItem = Instantiate (_orbitItems[index], _orbitItemContainer) as GameObject;
+					Vector3[] orbit = OrbitManager.Instance.GetOrbit ();
+					orbitItem.transform.position = orbit[0];
+
+					orbitItem.transform.DOPath (orbit, _orbitDuration, PathType.CatmullRom, PathMode.TopDown2D)
+						.SetEase (Ease.Linear)
+						.OnComplete (() => {
+							if (orbitItem != null)
+							{
+								Destroy (orbitItem);
+							}
+						});
+				}
+			}
+
+			_lastOrbitItemSpawnAttempTime = Time.time;
+		}
+	}
+
+	private void FixedUpdate ()
 	{
 		// Apply gravity towards planets to players
 		int numPlanets = _planets.Count;
