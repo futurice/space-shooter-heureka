@@ -158,7 +158,11 @@ public class PlayerController : Timeoutable
 
 		// Update the score text
 		int points = ScoreManager.Instance.GetPointsForPlayer (Id);
-		_scoreText.text = string.Format ("{0}{1} PTS", points > 0 ? "+" : string.Empty, points);
+
+		if (_scoreText != null)
+		{
+			_scoreText.text = string.Format ("{0}{1} PTS", points < 0 ? string.Empty : "+", points);
+		}
 	}
 
 	private void FixedUpdate () 
