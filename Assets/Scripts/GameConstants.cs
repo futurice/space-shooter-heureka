@@ -5,10 +5,16 @@ using System.Collections.Generic;
 public class GameConstants {
 
 	public class PlayerKeys {
+		#if UNITY_EDITOR
+		private static readonly int InputMappingOffset = 1;
+		#else
+		private static readonly int InputMappingOffset = 2;
+		#endif
+
 		private int _id;
 		//Keys are mapped in "Project Settings > Input", based on this convention
 		public PlayerKeys(int id) {
-			_id = id;
+			_id = id + InputMappingOffset; //+offset because of our mapping in Input "Project Settings > Input"
 		}
 
 		public string VerticalAxis {
@@ -29,7 +35,7 @@ public class GameConstants {
 	private static Dictionary<int, PlayerKeys> _keyCodeLUT = new Dictionary<int, PlayerKeys>();
 	private static Dictionary<int, Vector3> _startPosLUT = new Dictionary<int, Vector3>();
 
-	public const int NUMBER_OF_PLAYERS = 5;
+	public const int NUMBER_OF_PLAYERS = 8;
 
 	//Timeouts are in seconds
 	public const float PLAYER_IDLE_TIMEOUT = 120.0f; 

@@ -28,6 +28,9 @@ public class DisplayInitializer : MonoBehaviour {
 		Vector2 res = getScreenRes(_resolution);
 		Debug.Log(string.Format("Setting screen resolution to {0}, {1}", res.x, res.y));
 		Screen.SetResolution((int)res.x, (int)res.y, false);
+		#if !UNITY_EDITOR
+		this.gameObject.GetComponent<Funnel.Funnel>().enabled=true;
+		#endif
 	}
 	
 	// Update is called once per frame
