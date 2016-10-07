@@ -1,29 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CollectableBehaviour : Timeoutable {
+public class CollectableBehaviour : Timeoutable
+{
+	[SerializeField]
+	private float _rotationSpeed = 0.5f;
+	[SerializeField]
+	ReceivedCollectable _receivableType = ReceivedCollectable.Random;
+	[SerializeField]
+	private Transform _model;
 
 	private Collectable _collectable;
 
 	//naming just sucks..
-	public enum ReceivedCollectable {
+	public enum ReceivedCollectable
+	{
 		Random,
 		Bonus
 	}
-	[SerializeField]
-	ReceivedCollectable _receivableType = ReceivedCollectable.Random;
 
-	public ReceivedCollectable ReceivableType {
-		set { _receivableType = value; }
+	public ReceivedCollectable ReceivableType
+	{
+		set
+		{
+			_receivableType = value;
+		}
 	}
 
-	// Use this for initialization
-	void Start () {
+	private void Update ()
+	{
+		_model.Rotate (Vector3.up, _rotationSpeed);
+	}
+
+	private void Start ()
+	{
 		//TODO change sprite based on the type?
-		if (_receivableType == ReceivedCollectable.Random) {
+		if (_receivableType == ReceivedCollectable.Random)
+		{
 			_collectable = Collectable.newRandomCollectable();
 		}
-		else {
+		else
+		{
 			_collectable = Collectable.newBonusCollectable();
 		}
 	}
