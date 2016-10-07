@@ -29,7 +29,8 @@ public class AudioManager : Singleton<AudioManager>
 		AcquireSpeedup,
 		AcquireEnlarge,
 		Shoot,
-        IntroFanfare
+        IntroFanfare,
+        AsteroidRumble
 	}
 
     private bool _muted = false;
@@ -54,7 +55,8 @@ public class AudioManager : Singleton<AudioManager>
 			case AppAudioClip.AcquireEnlarge: 	return "Audio/pick_up_3";
 			case AppAudioClip.Shoot: 			return "Audio/weapon_enemy";
             case AppAudioClip.IntroFanfare:     return "Audio/fanfare";
-		}
+            case AppAudioClip.AsteroidRumble:   return "Audio/asteroid_rumble_mid";
+        }
 
 		return path;
     }
