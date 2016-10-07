@@ -5,11 +5,13 @@ public class SessionManager : Singleton<SessionManager> {
 
 	[SerializeField]
 	GameObject _introPoster;
+    [SerializeField]
+    GameObject _titleBanner;
 
 	enum GameState {
 		Idle,
 		Intro,
-		Instructions,
+        Instructions,
 		Round1,
 		Round1Cleanup,
 		MidScores,
@@ -25,8 +27,8 @@ public class SessionManager : Singleton<SessionManager> {
 			switch (_curState)
 			{
 				case GameState.Idle: 			return GameState.Intro;
-				case GameState.Intro: 			return GameState.Instructions;
-				case GameState.Instructions: 	return GameState.Round1;
+                case GameState.Intro: 			return GameState.Instructions;
+                case GameState.Instructions: 	return GameState.Round1;
 				case GameState.Round1: 			return GameState.Round1Cleanup;
 				case GameState.Round1Cleanup: 	return GameState.MidScores;
 	            case GameState.MidScores: 		return GameState.Round2;
@@ -77,8 +79,8 @@ public class SessionManager : Singleton<SessionManager> {
 		switch (state)
 		{
 		case GameState.Idle: 			return -1.0f;
-		case GameState.Intro: 			return 5.0f;
-		case GameState.Instructions: 	return 55.0f;
+		case GameState.Intro: 			return 25.0f;
+        case GameState.Instructions: 	return 55.0f;
 		case GameState.Round1: 			return 180.0f;
 		case GameState.Round1Cleanup: 	return 5.0f;
 		case GameState.MidScores: 		return 15.0f;
@@ -109,6 +111,14 @@ public class SessionManager : Singleton<SessionManager> {
 		}
 	}
 
+    private void ShowTitleBanner (bool show)
+    {
+        if (_titleBanner != null)
+        {
+            _titleBanner.SetActive (show);
+        }
+    }
+
 	private void GotoNextState ()
 	{
 		GameState newState = NextState;
@@ -119,9 +129,9 @@ public class SessionManager : Singleton<SessionManager> {
 		}
 		else if (newState == GameState.Intro)
 		{
-			//InsultManager.Instance.tellIntro();
-			//TODO possibly show some video? or just play some music, etc
-		}
+            AudioManager.Instance.playClip(AudioManager.AppAudioClip.IntroFanfare);
+            _titleBanner.GetComponent<IntroBannerBehaviour>().doAnimation();
+        }
 		else if (newState == GameState.Instructions)
 		{
 			InsultManager.Instance.tellInstructions();
@@ -149,6 +159,7 @@ public class SessionManager : Singleton<SessionManager> {
 		}
 	
 		ShowIntroPoster(newState == GameState.Idle);
+        ShowTitleBanner(newState == GameState.Intro);
 
 		Debug.Log("Setting New State: " + newState);
 		CurrentState = newState;

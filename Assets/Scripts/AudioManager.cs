@@ -9,6 +9,9 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField]
     private GameObject 	_audioSourcePrefab 		= null;
 
+    [SerializeField]
+    private GameObject  _audioSourceMusicPrefab = null;
+
 	[Header("Text To Speech (TTS")]
 	[SerializeField]
 	private GameObject 	_audioSourceTTSPrefab 	= null;
@@ -25,7 +28,9 @@ public class AudioManager : Singleton<AudioManager>
 		AcquireWeapon,
 		AcquireSpeedup,
 		AcquireEnlarge,
-		Shoot
+		Shoot,
+        IntroFanfare,
+        AsteroidRumble
 	}
 
     private bool _muted = false;
@@ -48,14 +53,23 @@ public class AudioManager : Singleton<AudioManager>
 			case AppAudioClip.AcquireWeapon: 	return "Audio/pick_up_1";
 			case AppAudioClip.AcquireSpeedup: 	return "Audio/pick_up_2";
 			case AppAudioClip.AcquireEnlarge: 	return "Audio/pick_up_3";
-			case AppAudioClip.Shoot: 			return "Audio/weapon_enemy";
-		}
+			case AppAudioClip.Shoot: 			return "Audio/weapon_enemy_quieter";
+            case AppAudioClip.IntroFanfare:     return "Audio/fanfare";
+            case AppAudioClip.AsteroidRumble:   return "Audio/asteroid_rumble_mid";
+        }
 
 		return path;
     }
 
     protected AudioManager() {}
 
+    private GameObject getAudioSourcePrefab(AppAudioClip clip) {
+        //TODO add separate audio source for bg music, or use the same as fanfar
+        if (clip == AppAudioClip.IntroFanfare)
+            return _audioSourceMusicPrefab;
+        else
+            return _audioSourcePrefab;
+    }
 
     public void playClip(AppAudioClip clip) {
         if (_muted) {
@@ -75,7 +89,7 @@ public class AudioManager : Singleton<AudioManager>
 				//Debug.Log("AudioManager clip loaded " + playMe);
 
 				//we have to use separate audiosources per clip, for polyphony
-				GameObject audioSource = Instantiate(_audioSourcePrefab) as GameObject;
+                GameObject audioSource = Instantiate(getAudioSourcePrefab(clip)) as GameObject;
 				audioSource.transform.SetParent(this.transform);
 				
 				

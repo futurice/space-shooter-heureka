@@ -5,9 +5,9 @@ public class FallingAsteroidBehaviour : AsteroidBehaviour
 {
 	private bool _animate = false;
 	private float _timeAcc = 0.0f;
-	private float _scaleFactorPerFrame = 1.05f;//TODO calc from animation length 
+	private float _scaleFactorPerFrame = 1.022f;//TODO calc from animation length 
 
-	private const float ANIMATION_LENGTH = 2.0f;
+	private const float ANIMATION_LENGTH = 2.5f;
 
 	public override void DestroyMe (int playerId =-1)
 	{
@@ -15,6 +15,7 @@ public class FallingAsteroidBehaviour : AsteroidBehaviour
 		//give a little spin
 		GetComponent<Rigidbody>().angularVelocity = Random.insideUnitSphere * 3 * _spinMagnitude;
 
+        AudioManager.Instance.playClip(AudioManager.AppAudioClip.AsteroidRumble);
 		//destroy the collider, since we're only animating at this point
 		Destroy(this.GetComponent<Collider>());
 	}

@@ -53,7 +53,7 @@ public class WeaponLauncher : Timeoutable, Timeoutable.TimeoutListener
 		//_curWeapon = Collectable.WeaponType.None;
 	}
 
-	public override float getTimeout()
+	public override float GetTimeout()
 	{
 		return GameConstants.WEAPON_TIMEOUT;
 	}
@@ -81,7 +81,7 @@ public class WeaponLauncher : Timeoutable, Timeoutable.TimeoutListener
 			projectile.GetComponent<ProjectileBehaviour> ().Init (PlayerController.Id, PlayerController.PlayerInformation.Color);
 
 			//TODO Select prefab based on weapontype
-			Collider shipCollider = GetComponent<Collider>();
+			Collider shipCollider = GetComponentInChildren<Collider> ();
 			Vector3 shipDirection = this.transform.forward;
 
 			//let's try to position the projectile so it's ahead. Should take the max speed of the ship into account..

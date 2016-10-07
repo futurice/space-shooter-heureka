@@ -14,6 +14,12 @@ public class PlayerInformation
 		protected set;
 	}
 
+	protected string PlayerShipResourcePath
+	{
+		get;
+		set;
+	}
+
 	protected string SpriteResourcePath
 	{
 		get;
@@ -24,6 +30,22 @@ public class PlayerInformation
 	{
 		get;
 		set;
+	}
+
+	private GameObject _playerShipPrefab;
+
+	public GameObject PlayerShipPrefab
+	{
+		get
+		{
+			if (_playerShipPrefab == null)
+			{
+				// Load the player ship prefab from resources
+				_playerShipPrefab = Resources.Load<GameObject> (PlayerShipResourcePath);
+			}
+
+			return _playerShipPrefab;
+		}
 	}
 
 	private Sprite _shipSilhouetteSprite;
@@ -58,10 +80,11 @@ public class PlayerInformation
 		}
 	}
 
-	public PlayerInformation (string name, Color color, string spriteResourcePath, string explosionResourcePath)
+	public PlayerInformation (string name, Color color, string playerShipResourcePath, string spriteResourcePath, string explosionResourcePath)
 	{
 		this.Name = name;
 		this.Color = color;
+		this.PlayerShipResourcePath = playerShipResourcePath;
 		this.SpriteResourcePath = spriteResourcePath;
 		this.ExplosionResourcePath = explosionResourcePath;
 	}
