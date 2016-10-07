@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using DG.Tweening;
+using UniRx;
 
 public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	[SerializeField]
@@ -17,6 +18,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private Text _timeText;
 	[SerializeField]
 	private float gravityForce = 100.0f;
+	[SerializeField]
+	private float _gravityRange = 120.0f;
 
 	[Header("Orbit items")]
 	[SerializeField]
@@ -55,7 +58,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	[SerializeField]
 	private Transform _asteroidContainer;
 
-	private List<GameObject> _asteroids = new List<GameObject>();
+	private List<GameObject> _asteroids = new List<GameObject> ();
 	private float _secsUntilNextCollectable = 0.0f;
 	private bool _warningGiven = false;
 	private Dictionary<int, PlayerState> _playerShips = new Dictionary<int, PlayerState>();
@@ -81,14 +84,15 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	private void Start ()
 	{
 		string[] joysticks = Input.GetJoystickNames();
-		foreach (string j in joysticks) {
+		foreach (string j in joysticks)
+		{
 			Debug.Log("Found joystick " + j);
 		}
 
-		for (int n = 0; n < GameConstants.NUMBER_OF_ASTEROIDS; n++) {
-			CreateAsteroid();
+		for (int n = 0; n < GameConstants.NUMBER_OF_ASTEROIDS; n++)
+		{
+			CreateAsteroid ();
 		}
-
 	}
 
 	public void StartNewRound (float roundLength)
@@ -99,7 +103,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			CreatePlayer(id);
 		}
 
-		initCollectableTimeout();
+		InitCollectableTimeout();
 		_warningGiven = false;
 		_isGameActive = true;
 		AudioManager.Instance.speak("Board your ships.");
@@ -125,7 +129,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		_timeText.text = string.Empty;
 	}
 
-	private void initCollectableTimeout()
+	private void InitCollectableTimeout ()
 	{
 		//Rate is loosely controlled by the number of active ships
 		float timeout = 10.0f;
@@ -140,6 +144,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		_secsUntilNextCollectable = Mathf.Clamp(timeout * Random.value, 1.0f, timeout);
 	}
 
+	private void Awake ()
+	{
+		// Register a function to take care of possibly invalidly destroyed asteroids
+		Observable.Interval (System.TimeSpan.FromSeconds (4.0f)).Subscribe (_ => {
+			UpdateAsteroids ();
+		});
+	}
+		
 	private void Update ()
 	{
 		if (!_isGameActive)
@@ -170,7 +182,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		{
 			//These should also be cleaned up.. Add logic to CollectableBehaviour or here
 			createCollectable();
-			initCollectableTimeout();
+			InitCollectableTimeout();
 		}
 
 		if (!_warningGiven)
@@ -178,7 +190,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			float secsLeft = 30.0f;
 			if (SessionManager.Instance.gameSessionLeft() < secsLeft)
 			{
-				AudioManager.Instance.speak("You have thirty seconds");
+				AudioManager.Instance.speak ("You have thirty seconds");
 				_warningGiven = true;
 			}
 		}
@@ -188,6 +200,29 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 		// Attempt to spawn orbit items at regular intervals
 		UpdateOrbitItems ();
+	}
+
+	private void UpdateAsteroids ()
+	{
+		Debug.Log ("GameManager UpdateAsteroids: Updating asteroids");
+
+		if (!_isGameActive)
+		{
+			return;
+		}
+
+		int numAsteroids = _asteroids.Count;
+		int numInvalidAsteroids = _asteroids.RemoveAll (go => go == null);
+
+		if (numInvalidAsteroids > 0)
+		{
+			Debug.LogFormat ("GameManager UpdateAsteroids: Replacing {0} invalid asteroids", numInvalidAsteroids);
+
+			for (int i = 0; i < numInvalidAsteroids; ++i)
+			{
+				CreateAsteroid ();
+			}
+		}
 	}
 
 	private void UpdateOrbitItems ()
@@ -228,12 +263,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		int numPlanets = _planets.Count;
 		int numPlayers = _playerShips.Count;
 
-		for (int i = 0; i < numPlanets; ++i)
+		foreach (PlayerState player in _playerShips.Values)
 		{
-			Rigidbody planetRigidbody = _planets[i];
+			bool outsideRangeOfAllPlanets = true;
 
-			foreach (PlayerState player in _playerShips.Values)
+			for (int i = 0; i < numPlanets; ++i)
 			{
+				Rigidbody planetRigidbody = _planets[i];
+
 				// No movement towards the y direction (no depth)
 				Vector3 direction = (planetRigidbody.position - player._rigidbody.position);
 				direction.y = 0.0f;
@@ -242,7 +279,20 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 				float magnitude = (gravityForce * planetRigidbody.mass * player._rigidbody.mass) / distSqr;
 				direction = direction.normalized;
 
-				player._rigidbody.AddForce (magnitude * direction * Time.fixedDeltaTime);
+				// If the distance squared is less than gravity range
+				// add the force to the ship
+				if (distSqr < _gravityRange)
+				{
+					player._rigidbody.AddForce (magnitude * direction * Time.fixedDeltaTime);
+					outsideRangeOfAllPlanets = false;
+				}
+			}
+
+			// If outside of gravity range for all planets zero all the forces
+			if (outsideRangeOfAllPlanets)
+			{
+				player._rigidbody.velocity = Vector3.zero;
+				player._rigidbody.angularVelocity = Vector3.zero;
 			}
 		}
 	}
@@ -287,13 +337,14 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	private void DestroyAll ()
 	{
-		foreach(PlayerState s in _playerShips.Values)
+		foreach (PlayerState s in _playerShips.Values)
 		{
 			GameObject obj = s._ship;
 			AnimateExplosion (obj.transform.position);
 			Destroy (obj);
 		}
-		_playerShips.Clear();
+
+		_playerShips.Clear ();
 		AudioManager.Instance.playClip (AudioManager.AppAudioClip.Explosion);
 	}
 

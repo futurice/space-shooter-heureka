@@ -44,8 +44,7 @@ public class AsteroidBehaviour : MonoBehaviour {
 			{
                 //give it a little spin
                 GetComponent<Rigidbody> ().angularVelocity = Random.insideUnitSphere * _spinMagnitude;
-            }
-			
+            }		
         }
 	}
 

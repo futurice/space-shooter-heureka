@@ -28,7 +28,7 @@ public class FallingAsteroidBehaviour : AsteroidBehaviour
 
 			if (_timeAcc > ANIMATION_LENGTH)
 			{
-				Destroy(this.gameObject);
+				Destroy (this.gameObject);
 			}
 
 			//since we have orthographic projection we need to animate scale
