@@ -57,7 +57,7 @@ public class CollectableBehaviour : Timeoutable
 			//This code could also be in PlayerController.. refactor if needed
 			SpaceShipController spaceShip = other.GetComponent<SpaceShipController> ();
 			PlayerController playerController = spaceShip.Player;
-			playerController.addCollectable (_collectable);
+			playerController.AddCollectable (_collectable);
 			Destroy (this.gameObject);
 			PlaySoundFX ();
 		}

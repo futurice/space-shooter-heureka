@@ -135,7 +135,8 @@ public class PlayerController : Timeoutable
 		return _hasInput;
 	}
 
-	public void addCollectable(Collectable collectable) {
+	public void AddCollectable (Collectable collectable)
+	{
 		//TODO use these on update / input, etc
 		//TODO remove it automatically after timeout, run out of ammo, etc
 		Debug.Log (string.Format ("SpaceShip {0}: Adding collectable of type: {1} + points {2}", Id, collectable.Type, collectable.Points));

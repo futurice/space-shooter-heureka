@@ -6,11 +6,14 @@ public class PlanetBehaviour : MonoBehaviour
 	[SerializeField]
 	private float _rotationSpeed 	= 5.0f;
 	[SerializeField]
-	private bool	_roate 			= true;
+	private bool	_rotate 		= true;
 
 	private void Update ()
 	{
-		this.gameObject.transform.Rotate (Vector3.up, _rotationSpeed);
+		if (_rotate)
+		{
+			this.gameObject.transform.Rotate (Vector3.up, _rotationSpeed);
+		}
 	}
 
 	private void OnTriggerEnter (Collider other)
