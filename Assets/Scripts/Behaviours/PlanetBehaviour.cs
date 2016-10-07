@@ -5,22 +5,15 @@ public class PlanetBehaviour : MonoBehaviour
 {
 	[SerializeField]
 	private float _rotationSpeed = 5.0f;
-	private Vector3 _direction = Vector3.zero;
-
-	private void Start ()
-	{
-		_direction = Random.insideUnitSphere;
-	}
 	
 	private void Update ()
 	{
-		//Rigidbody rb = GetComponent<Rigidbody> ();
-		//rb.transform.Rotate(_rotationSpeed * _direction);
-		this.gameObject.transform.Rotate(_rotationSpeed * _direction);
+		this.gameObject.transform.Rotate (Vector3.up, _rotationSpeed);
 	}
 
 	private void OnTriggerEnter (Collider other)
 	{
+		Debug.Log ("Collided to planet");
 		if (other.CompareTag ("projectile"))
 		{
 			GameManager.Instance.DestroyWithExplosion (other.gameObject, other.gameObject.GetComponent <ProjectileBehaviour> ().SourceId);
