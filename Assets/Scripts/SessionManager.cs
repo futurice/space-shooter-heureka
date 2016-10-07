@@ -4,9 +4,15 @@ using System.Collections;
 public class SessionManager : Singleton<SessionManager> {
 
 	[SerializeField]
-	GameObject _introPoster;
+	private GameObject _introPoster;
     [SerializeField]
-    GameObject _titleBanner;
+    private GameObject _titleBanner;
+
+	[Header("Instructions")]
+	[SerializeField]
+	private GameObject _instructionsContainer;
+	[SerializeField]
+	private CanvasGroup _instructionsCanvasGroup;
 
 	enum GameState {
 		Idle,
@@ -119,6 +125,14 @@ public class SessionManager : Singleton<SessionManager> {
         }
     }
 
+	private void ShowInstructions (bool show)
+	{
+		if (_instructionsContainer != null)
+		{
+			_instructionsContainer.SetActive (show);
+		}
+	}
+
 	private void GotoNextState ()
 	{
 		GameState newState = NextState;
@@ -158,8 +172,9 @@ public class SessionManager : Singleton<SessionManager> {
 			HighScoreListManager.Instance.HideHighScores ();
 		}
 	
-		ShowIntroPoster(newState == GameState.Idle);
-        ShowTitleBanner(newState == GameState.Intro);
+		ShowInstructions (newState == GameState.Instructions);
+		ShowIntroPoster (newState == GameState.Idle);
+        ShowTitleBanner (newState == GameState.Intro);
 
 		Debug.Log("Setting New State: " + newState);
 		CurrentState = newState;
