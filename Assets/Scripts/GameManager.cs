@@ -254,7 +254,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	public void DestroyWithExplosion (GameObject obj, int playerId =-1)
 	{
-		DestroyWithExplosion(obj, true, true, playerId);
+		DestroyWithExplosion (obj, true, true, playerId);
 	}
 
 	public void DestroyWithExplosion (GameObject obj, bool scores, bool sounds, int playerId =-1)
@@ -294,7 +294,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			Destroy (obj);
 		}
 		_playerShips.Clear();
-		AudioManager.Instance.playClip(AudioManager.AppAudioClip.Explosion);
+		AudioManager.Instance.playClip (AudioManager.AppAudioClip.Explosion);
 	}
 
     public void AnimateExplosion (Vector3 position, int playerId =-1, float scaleFactor = -1.0f)
