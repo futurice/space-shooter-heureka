@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class SessionManager : Singleton<SessionManager> {
 
@@ -129,6 +130,18 @@ public class SessionManager : Singleton<SessionManager> {
 	{
 		if (_instructionsContainer != null)
 		{
+			if (show)
+			{
+				_instructionsCanvasGroup.alpha = 0.0f;
+				_instructionsCanvasGroup.DOFade (1.0f, 4.0f)
+					.SetDelay (8.0f)
+					.SetEase (Ease.Linear);
+			}
+			else
+			{
+				_instructionsCanvasGroup.alpha = 0.0f;
+			}
+
 			_instructionsContainer.SetActive (show);
 		}
 	}
