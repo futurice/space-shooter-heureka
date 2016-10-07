@@ -94,7 +94,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 	public void StartNewRound (float roundLength)
 	{
 		//TODO enumerate min and max
-		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++)
+		for (int id = 0; id < GameConstants.NUMBER_OF_PLAYERS; id++)
 		{
 			CreatePlayer(id);
 		}
@@ -148,7 +148,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 
 		//TODO remove direct button listening from this class... abstract it somewhere and just get events, etc
-		for (int id = 1; id < GameConstants.NUMBER_OF_PLAYERS + 1; id++)
+		for (int id = 0; id < GameConstants.NUMBER_OF_PLAYERS; id++)
 		{
 			if (!_playerShips.ContainsKey(id))
 			{
@@ -322,25 +322,30 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 
 	public void DestroyAsteroid (GameObject obj, int playerId = -1)
 	{
-		Debug.Log("destroy asteroid");
+		Debug.Log ("destroy asteroid");
 
 		if (_asteroids.Remove(obj))
 		{
 			//create new to replace old one
-			Debug.Log("Creating a new asteroid to replace old");
-			CreateAsteroid();
+			Debug.Log ("Creating a new asteroid to replace old");
+			CreateAsteroid ();
 		}
 		else
 		{
-			Debug.LogWarning("Destroying asteroid that's not on the list!");
+			Debug.LogWarning ("Destroying asteroid that's not on the list!");
 		}
 
-		AsteroidBehaviour behaviour = obj.GetComponent<AsteroidBehaviour>();
+		AsteroidBehaviour behaviour = obj.GetComponent<AsteroidBehaviour> ();
 		behaviour.DestroyMe (playerId);
 	}
 
 	private void CreatePlayer (int id)
 	{
+		if (id < 0 || id >= 8)
+		{
+			Debug.LogErrorFormat ("GameManager CreatePlayer: Invalid id: {0} maximum id is 7", id);
+		}
+
 		int index =  id % _spaceShipPrefabs.Count;
 		GameObject prefab = _spaceShipPrefabs[index];
 		GameObject ship = Instantiate (prefab, _playerContainer) as GameObject;

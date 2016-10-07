@@ -18,11 +18,13 @@ public class PlayerInformationManager : Singleton<PlayerInformationManager>
 
 	public PlayerInformation GetPlayerInformation (int id)
 	{
+		int defaultId = 7;
 		PlayerInformation playerInformation = null;
 
 		if (!_playerInformationMap.TryGetValue (id, out playerInformation))
 		{
-			Debug.LogErrorFormat ("PlayerInformationManager GetPlayerInformation: Could not find player information for id: {0}", id);
+			Debug.LogErrorFormat ("PlayerInformationManager GetPlayerInformation: Could not find player information for id: {0} - defaulting to {1}", defaultId);
+			return _playerInformationMap[defaultId];
 		}
 
 		return playerInformation;

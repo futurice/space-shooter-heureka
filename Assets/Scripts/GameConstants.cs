@@ -46,25 +46,29 @@ public class GameConstants {
 	public const int POINTS_FOR_CHILICORN = 1000;
 	//Points for each second of lifetime? could increase over time?
 
-	static GameConstants() {
+	static GameConstants()
+	{
 		const float angleInc = 2.0f * Mathf.PI / NUMBER_OF_PLAYERS;
 
-		for (int id = 1; id < NUMBER_OF_PLAYERS + 1; id++) {
-			_keyCodeLUT.Add(id, new PlayerKeys(id));
+		for (int id = 0; id < NUMBER_OF_PLAYERS; id++)
+		{
+			_keyCodeLUT.Add (id, new PlayerKeys (id));
 			//create positions on unit circle in 2d space
-			Vector3 startPos = new Vector3(Mathf.Cos((id-1) * angleInc), 0.0f, Mathf.Sin((id-1) * angleInc));
-			_startPosLUT.Add(id, startPos);
+			Vector3 startPos = new Vector3 (Mathf.Cos((id-1) * angleInc), 0.0f, Mathf.Sin((id-1) * angleInc));
+			_startPosLUT.Add (id, startPos);
 		}
 	}
 
-	public static PlayerKeys getPlayerKeys(int id) {
+	public static PlayerKeys getPlayerKeys (int id)
+	{
 		return _keyCodeLUT[id];
 	}
 
 	/**
 	 * return unique direction on unit circle to place the player around some point (f.ex planet)
 	 * */
-	public static Vector3 getPlayerStartDirection(int id) {
+	public static Vector3 getPlayerStartDirection (int id)
+	{
 		return _startPosLUT[id];
 	}
 
