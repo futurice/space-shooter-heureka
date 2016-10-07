@@ -53,7 +53,7 @@ public class AudioManager : Singleton<AudioManager>
 			case AppAudioClip.AcquireWeapon: 	return "Audio/pick_up_1";
 			case AppAudioClip.AcquireSpeedup: 	return "Audio/pick_up_2";
 			case AppAudioClip.AcquireEnlarge: 	return "Audio/pick_up_3";
-			case AppAudioClip.Shoot: 			return "Audio/weapon_enemy";
+			case AppAudioClip.Shoot: 			return "Audio/weapon_enemy_quieter";
             case AppAudioClip.IntroFanfare:     return "Audio/fanfare";
             case AppAudioClip.AsteroidRumble:   return "Audio/asteroid_rumble_mid";
         }
