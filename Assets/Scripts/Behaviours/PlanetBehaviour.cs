@@ -13,7 +13,6 @@ public class PlanetBehaviour : MonoBehaviour
 
 	private void OnTriggerEnter (Collider other)
 	{
-		Debug.Log ("Collided to planet");
 		if (other.CompareTag ("projectile"))
 		{
 			GameManager.Instance.DestroyWithExplosion (other.gameObject, other.gameObject.GetComponent <ProjectileBehaviour> ().SourceId);

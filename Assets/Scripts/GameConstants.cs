@@ -43,6 +43,7 @@ public class GameConstants {
 	public const int POINTS_FOR_COLLECTABLE = 250;
 	public const int POINTS_FOR_ASTEROID = 25;
 	public const int POINTS_FOR_DYING = -100;
+	public const int POINTS_FOR_CHILICORN = 1000;
 	//Points for each second of lifetime? could increase over time?
 
 	static GameConstants() {
