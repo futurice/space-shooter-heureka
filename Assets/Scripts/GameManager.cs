@@ -86,7 +86,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		}
 
 		for (int n = 0; n < GameConstants.NUMBER_OF_ASTEROIDS; n++) {
-			createAsteroid();
+			CreateAsteroid();
 		}
 
 	}
@@ -328,7 +328,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		{
 			//create new to replace old one
 			Debug.Log("Creating a new asteroid to replace old");
-			createAsteroid();
+			CreateAsteroid();
 		}
 		else
 		{
@@ -388,7 +388,8 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		collectable.GetComponent<CollectableBehaviour>().addTimeoutListener(this);
 	}
 
-	private void createAsteroid() {
+	private void CreateAsteroid ()
+	{
 		//TODO some animation
 		GameObject asteroid = Instantiate (_asteroidPrefab, _asteroidContainer) as GameObject;
 
@@ -406,7 +407,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		float randomZ = (Random.value - 0.5f) * _gameArea.localScale.z;
 		asteroid.transform.position = new Vector3(randomX, 0.0f, randomZ); 
 
-		float scaleFactor = Random.Range(0.5f, 1.0f);
+		float scaleFactor = Random.Range(0.1f, 0.3f);
 		asteroid.transform.localScale = scaleFactor * asteroid.transform.localScale;
 		_asteroids.Add(asteroid);
 	}
