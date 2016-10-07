@@ -6,6 +6,18 @@ public class ChilicornBehaviour : MonoBehaviour
 	[SerializeField]
 	private int _hp = 5;
 
+	private void Start ()
+	{
+		// Hack to fix the chilicorn to face the right direction on
+		// the left to down orbit
+		if (transform.position.z > 0.0f)
+		{
+			Vector3 localScale = transform.localScale;
+			localScale.x *= -1.0f;
+			transform.localScale =  localScale;
+		}
+	}
+
 	private void OnTriggerEnter (Collider other)
 	{
 		if (other.CompareTag ("projectile"))
