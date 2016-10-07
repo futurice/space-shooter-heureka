@@ -23,7 +23,7 @@ public class PlayerController : Timeoutable
 	private GameConstants.PlayerKeys 	_keys = new GameConstants.PlayerKeys (0);
     private List<Collectable> 			_collectables = new List<Collectable> ();//TODO add timestamp, so we can 
 	private bool 						_hasInput = false;
-	private GameObject					_playerShip;
+	private SpaceShipController			_playerShip;
 
 	private int	_id = 0;
 
@@ -113,8 +113,9 @@ public class PlayerController : Timeoutable
 		SetPlayerKeys (keys);
 		this.PlayerInformation = playerInformation;
 
-		_playerShip = Instantiate (playerInformation.PlayerShipPrefab, _shipContainer, false) as GameObject;
-		_playerShip.GetComponent<SpaceShipController> ().Init (this);
+		GameObject go = Instantiate (playerInformation.PlayerShipPrefab, _shipContainer, false) as GameObject;
+		_playerShip = go.GetComponent<SpaceShipController> ();
+		_playerShip.Init (this);
 
 		_playerShip.OnTriggerEnterAsObservable ().Subscribe (collider => {
 			OnPlayerShipTriggerEnter (collider);
@@ -182,6 +183,7 @@ public class PlayerController : Timeoutable
 		float horizontal = Input.GetAxis(_keys.HorizontalAxis);
 		float vertical = Input.GetAxis(_keys.VerticalAxis);
 		_hasInput = horizontal > 0.00001f || vertical > 0.000001f;
+		_playerShip.SetEnginesOn (_hasInput);
 
 		Rigidbody rb = Rigidbody;
 
