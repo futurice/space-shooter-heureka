@@ -4,8 +4,10 @@ using System.Collections;
 public class PlanetBehaviour : MonoBehaviour
 {
 	[SerializeField]
-	private float _rotationSpeed = 5.0f;
-	
+	private float _rotationSpeed 	= 5.0f;
+	[SerializeField]
+	private bool	_roate 			= true;
+
 	private void Update ()
 	{
 		this.gameObject.transform.Rotate (Vector3.up, _rotationSpeed);
