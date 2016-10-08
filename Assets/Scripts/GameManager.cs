@@ -449,7 +449,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO some animation
 		GameObject asteroid = Instantiate (_asteroidPrefab, _asteroidContainer) as GameObject;
 
-		if (Random.value > 0.2f)
+		if (Random.value > 0.05f)
 		{
 			asteroid.AddComponent<AsteroidBehaviour>();
 		}
