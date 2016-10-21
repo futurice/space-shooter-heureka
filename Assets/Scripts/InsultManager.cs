@@ -28,11 +28,11 @@ public class InsultManager : Singleton<InsultManager> {
 	}
 
 	public void tellInstructions() {
-		AudioManager.Instance.speak(_instructions);
+		AudioManager.Instance.Speak(_instructions);
 	}
 	
 	public void tellIntro() {
-		AudioManager.Instance.speak("Welcome Space Cadets! This is Admiral Marcus, Commander of the USS Futurice.");	
+		AudioManager.Instance.Speak("Welcome Space Cadets! This is Admiral Marcus, Commander of the USS Futurice.");	
 	}
 
 	public void tellHighscores(List<KeyValuePair<int, int>> scores, bool firstRound) {
@@ -66,7 +66,7 @@ public class InsultManager : Singleton<InsultManager> {
 			s.AppendLine("I'd like the winners to report to the deck, we have a surprise for you. All you others can piss off");
         }
 
-		AudioManager.Instance.speak(s.ToString());	
+		AudioManager.Instance.Speak(s.ToString());	
     }
     
     
@@ -78,16 +78,16 @@ public class InsultManager : Singleton<InsultManager> {
 				count++;
 		}           
 		if (count == 4) {
-			AudioManager.Instance.speak(string.Format("Player {0}, you're going too fast!", id));
+			AudioManager.Instance.Speak(string.Format("Player {0}, you're going too fast!", id));
 		}
 		else if (count == 5) {
-			AudioManager.Instance.speak(string.Format("Player {0}, slow down!", id));
+			AudioManager.Instance.Speak(string.Format("Player {0}, slow down!", id));
 		}
 	}
 
 	public void playerDied(int id) {
 		if (_lastKIA == id) {
-			AudioManager.Instance.speak(string.Format(_kiaInsults[_kiaIndex++], id));
+			AudioManager.Instance.Speak(string.Format(_kiaInsults[_kiaIndex++], id));
 			if (_kiaIndex >= _kiaInsults.Length) {
 				_kiaIndex = 0;
 			}

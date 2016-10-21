@@ -106,7 +106,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		InitCollectableTimeout();
 		_warningGiven = false;
 		_isGameActive = true;
-		AudioManager.Instance.speak("Board your ships.");
+		AudioManager.Instance.Speak("Board your ships.");
 
 		// Show the time display
 		_gameStartedTime = Time.time;
@@ -120,7 +120,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 		//TODO modify state so players cannot re-create themselves
 		DestroyAll ();
 		_isGameActive = false;
-		AudioManager.Instance.speak("Time's up.");
+		AudioManager.Instance.Speak("Time's up.");
 
 		// Hide the time display
 		_gameStartedTime = -1.0f;
@@ -190,7 +190,7 @@ public class GameManager: Singleton<GameManager>, Timeoutable.TimeoutListener {
 			float secsLeft = 30.0f;
 			if (SessionManager.Instance.gameSessionLeft() < secsLeft)
 			{
-				AudioManager.Instance.speak ("You have thirty seconds");
+				AudioManager.Instance.Speak ("You have thirty seconds");
 				_warningGiven = true;
 			}
 		}

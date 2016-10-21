@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+#if RTVOICE
 using Crosstales.RTVoice.Model;
 using Crosstales.RTVoice;
+#endif
 
 public class AudioManager : Singleton<AudioManager>
 {
@@ -12,6 +15,7 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField]
     private GameObject  _audioSourceMusicPrefab = null;
 
+	#if RTVOICE
 	[Header("Text To Speech (TTS")]
 	[SerializeField]
 	private GameObject 	_audioSourceTTSPrefab 	= null;
@@ -19,6 +23,7 @@ public class AudioManager : Singleton<AudioManager>
 	private Transform	_ttsContainer			= null;
 	[SerializeField]
 	private Voice 		_speakerVoice;
+	#endif
 
     private List<AudioSource> _currentlyPlaying = new List<AudioSource>();
 
@@ -120,8 +125,9 @@ public class AudioManager : Singleton<AudioManager>
         Destroy(source);
     }
 
-	public void speak(string speech) {
-
+	public void Speak (string speech)
+	{
+		#if RTVOICE
 		// Silence all existing speakers - we are polite no talking on top of
 		// our selves
 		silence ();
@@ -141,10 +147,18 @@ public class AudioManager : Singleton<AudioManager>
 			AudioSource source = audioSource.GetComponent<AudioSource> ();
 			Speaker.Speak (speech, source, _speakerVoice, true, rate, vol, "", pitch);
 		}
+		#else
+		Debug.LogWarning ("AudioManager Speak: RTVoice is not in use");
+		#endif
 	}
 
-	public void silence() {
+	public void Silence () 
+	{
+		#if RTVOICE
 		Speaker.Silence ();
 		_ttsContainer.DestroyChildren ();
+		#else
+		Debug.LogWarning ("AudioManager Silence: RTVoice is not in use");
+		#endif
 	}
 }
