@@ -13,7 +13,7 @@ See more details about the calibration setup in /setup/README.md
 
 The following dependencies are required for the project to work and have open source licenses. The dependencies are included with the project under the Assets/Plugins folder.
 
-- [Funnel](https://github.com/keijiro/Funnel) for Syphon-server-support ([license]())
+- [Funnel](https://github.com/keijiro/Funnel) for Syphon-server-support ([license](https://github.com/keijiro/Funnel))
 - [DOTween](http://dotween.demigiant.com) ([licence](http://dotween.demigiant.com/license.php))
 - [UniRX](https://github.com/neuecc/UniRx) ([license](https://github.com/neuecc/UniRx/blob/master/LICENSE))
 
