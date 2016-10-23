@@ -1,17 +1,17 @@
 # Space Shooter Heureka
 
-This is a simple arcade-style space shooter game which is going to be installed on the planetarium for the FutuParty 2016 in Heureka. 
+This is a simple arcade-style space shooter game which was installed on the Heureka Science Center planetarium for the FutuParty 2016. 
 
 ## Tools
 
 Developed on Unity3D pro v5.4.1.
-If time allows we will do the dome calibration mapping with [Omnidome](http://omnido.me/).
+Planetarium dome projection mapping was done using [Omnidome](http://omnido.me/).
 
 See more details about the calibration setup in /setup/README.md
 
 ## Required Dependencies
 
-The following dependencies are required for the project to work and have open source licenses. The dependencies are included with the project under the Assets/Plugins folder.
+The following dependencies are required for the project to work and have open source licenses. The dependencies are included with the project under the Assets/Plugins folder.  
 
 - [Funnel](https://github.com/keijiro/Funnel) for Syphon-server-support ([license](https://github.com/keijiro/Funnel))
 - [DOTween](http://dotween.demigiant.com) ([licence](http://dotween.demigiant.com/license.php))
@@ -25,14 +25,14 @@ The following plugins improve the game experience, but are not open source and m
 
 ## Graphical assets and 3d models
 
-Developed by Futurice, but at the moment might contain some assets owned by Unity. 
+Mostly developed by Futurice, but there are few remaining assets released by Unity as part of their demo assets, which are licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 ## Running
 
-- Decide the resolution (how many projectors are you using?). reso currently hardcoded in the app and also to Unity>Player Settings
-- Build the game using unity3d
+- Decide the resolution (how many projectors are you using?). 
+    - Resolution of the application is currently hardcoded in the app and also to *Unity > Player Settings*
+    - Current resolution is 1920x2160 (2 x FullHD on top of each other)
+- Build the game using Unity3d
 - if used with omnidome, output the syphon/funnel output to omnidome. And naturally calibrate the dome.
-
-## TODO 
-- Remove all assets not used, and hopefully replace all assets with our in-house design
+    - Currently Syphon is always enabled in the final build using a platform #define directive
 

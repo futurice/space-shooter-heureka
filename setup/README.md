@@ -17,7 +17,7 @@ We used Funnel-plugin for Unity which worked out of the box, as long as you buil
 
 Funnel can be found here: https://github.com/keijiro/Funnel
 
-Whole signal-processing framework is quite heavy on the GPU, so having a Mac with discrete graphics is highly recommended. 
+Whole signal-processing-chain is quite heavy on the GPU, so having a Mac with discrete graphics is highly recommended. 
 
 ## HW
 For HW we used Macbook Pro 2,5 GHz Intel Core i7, 16 GB 1600 MHz DDR3, NVIDIA GeForce GT 750M 2048 MB, OSX El Capitan.
