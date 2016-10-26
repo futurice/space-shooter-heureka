@@ -7,7 +7,7 @@ This is a simple arcade-style space shooter game which was installed on the Heur
 Developed on Unity3D pro v5.4.1.
 Planetarium dome projection mapping was done using [Omnidome](http://omnido.me/).
 
-See more details about the calibration setup in /setup/README.md
+Read more details about the calibration setup from [/setup/README.md](setup/README.md).
 
 ## Required Dependencies
 
@@ -25,7 +25,7 @@ The following plugins improve the game experience, but are not open source and m
 
 ## Graphical assets and 3d models
 
-Mostly developed by Futurice, but there are few remaining assets released by Unity as part of their demo assets, which are licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
+Mostly developed by Futurice, but there are few remaining assets released by Unity as part of their demo assets, which are licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license. See full file list [here](LICENSE-EXT-ASSETS).
 
 ## Running
 

@@ -1,0 +1,52 @@
+Copyright (c) 2016 Unity
+
+Following files are licensed by Unity with the terms found below.
+
+Assets\Materials\
+    part_blast_mat
+    part_glow_mat
+    part_jet_core_mat
+    part_jet_faler_mat
+    part_shockwave_mat
+    part_spark_blue_mat
+    part_spark_large_mat
+    part_spart_white_mat
+    part_spark_yellow_mat
+    part_star_mat
+    
+Assets\Resources\Audio\
+    explosion_player.wav
+    pick_up_1.wav
+    pick_up_2.wav
+    pick_up_3.wav
+    pick_up_4.wav
+    weapon_enemy.wav
+    weapon_enemy_quieter.wav
+    weapon_player.wav
+    
+Assets\Textures\
+    part_star_dff.tif
+    part_spark_small_dff.tif
+    part_spark_large_dff.tif
+    part_shockwave_dff.tif
+    part_jet_flare_dff.tif
+    part_jet_core_dff.tif
+    part_flash_dff.tif
+    part_enginePulse_dff.tif
+    
+    
+
+## LICENSE TERMS
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
